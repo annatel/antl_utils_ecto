@@ -1,0 +1,11 @@
+defmodule Child do
+  use Ecto.Schema
+
+  embedded_schema do
+    field(:field1, :string)
+    field(:field2, :string)
+
+    belongs_to(:parent, Parent)
+    belongs_to(:parent_with_queryable_overrided, ParentWithQueryableOverrided)
+  end
+end
