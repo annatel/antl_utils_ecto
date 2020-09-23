@@ -19,3 +19,11 @@ end
 ```
 
 The docs can be found at [https://hexdocs.pm/antl_utils_ecto](https://hexdocs.pm/antl_utils_ecto).
+
+## AntlUtils*
+
+All AntlUtils libraries by Annatel:
+
+* [AntlUtilsElixir](https://github.com/annatel/antl_utils_elixir) - Set of utils for Elixir
+* [AntlUtilsElixir](https://github.com/annatel/antl_utils_ecto) - Set of utils for Ecto
+* [AntlUtilsElixir](https://github.com/annatel/antl_utils_absinthe) - Set of utils for Absinthe
