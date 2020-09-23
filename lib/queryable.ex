@@ -10,7 +10,7 @@ defmodule AntlUtilsEcto.Queryable do
       @behaviour unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
 
-      import Ecto.Query, only: [where: 2]
+      import Ecto.Query, only: [dynamic: 2, where: 2]
 
       @sortable_fields Keyword.get(unquote(opts), :sortable_fields, [:inserted_at, :updated_at])
       @searchable_fields Keyword.get(unquote(opts), :searchable_fields, [:id])
