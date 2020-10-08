@@ -13,7 +13,7 @@ The package can be installed by adding `antl_utils_ecto` to your list of depende
 ```elixir
 def deps do
   [
-    {:antl_utils_ecto, "~> 0.2.0"}
+    {:antl_utils_ecto, "~> 0.3.0"}
   ]
 end
 ```
