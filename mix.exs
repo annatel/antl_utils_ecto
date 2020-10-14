@@ -28,7 +28,7 @@ defmodule AntlUtilsEcto.MixProject do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:ecto, "~> 3.0"},
-      {:antl_utils_elixir, "~> 0.1"}
+      {:antl_utils_elixir, "~> 0.2.0"}
     ]
   end
 
