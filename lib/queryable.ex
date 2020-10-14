@@ -39,24 +39,23 @@ defmodule AntlUtilsEcto.Queryable do
       def filter(queryable, filters),
         do: Enum.reduce(filters, queryable, &filter_by_field(&1, &2))
 
-      def search(queryable, search_query, metadata \\ [])
-      def search(queryable, nil, _metadata), do: queryable
+      def search(queryable, search_query, metadata \\ [], searchable_fields \\ @searchable_fields)
+      def search(queryable, nil, _metadata, _searchable_fields), do: queryable
 
-      def search(queryable, search_query, metadata)
+      def search(queryable, search_query, metadata, searchable_fields)
           when is_binary(search_query) and is_list(metadata),
-          do: where(queryable, ^search_where_query(search_query, metadata))
+          do: where(queryable, ^search_where_query(search_query, metadata, searchable_fields))
 
-      defp search_where_query(search_query, []) do
-        Enum.reduce(
-          @searchable_fields,
-          Ecto.Query.dynamic(false),
-          &search_by_field({&1, search_query}, &2)
-        )
+      defp search_where_query(search_query, [], searchable_fields)
+           when is_list(searchable_fields) do
+        searchable_fields
+        |> Enum.reduce(Ecto.Query.dynamic(false), &search_by_field({&1, search_query}, &2))
       end
 
-      defp search_where_query(search_query, metadata) when length(metadata) > 0 do
-        Enum.reduce(
-          @searchable_fields,
+      defp search_where_query(search_query, metadata, searchable_fields)
+           when length(metadata) > 0 and is_list(searchable_fields) do
+        searchable_fields
+        |> Enum.reduce(
           Ecto.Query.dynamic(false),
           &search_by_field({&1, search_query}, &2, metadata)
         )

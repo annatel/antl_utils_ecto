@@ -140,5 +140,17 @@ defmodule AntlUtilsEcto.QueryableTest do
 
       assert inspect(query_1) == inspect(query_2)
     end
+
+    test "search in a specific fields only" do
+      search_query = "toto"
+
+      query_1 =
+        ParentWithSearchableFields.queryable()
+        |> ParentWithSearchableFields.search(search_query, [], [:field1])
+
+      query_2 = from(p in ParentWithSearchableFields, where: false or like(p.field1, ^"%toto%"))
+
+      assert inspect(query_1) == inspect(query_2)
+    end
   end
 end
