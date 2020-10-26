@@ -1,4 +1,8 @@
 defmodule AntlUtilsEcto.Queryable do
+  @moduledoc """
+  Superpower your schemas.
+  """
+
   @callback queryable() :: Ecto.Queryable.t()
   @callback paginate(Ecto.Queryable.t(), integer, keyword) :: Ecto.Queryable.t()
   @callback sort(Ecto.Queryable.t(), map) :: Ecto.Queryable.t()

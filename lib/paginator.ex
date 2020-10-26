@@ -1,6 +1,6 @@
 defmodule AntlUtilsEcto.Paginator do
   @moduledoc """
-  Documentation for Paginator.
+  Set of utils for Ecto about Pagination
   """
 
   import Ecto.Query, only: [limit: 2, offset: 2]

@@ -1,4 +1,7 @@
 defmodule AntlUtilsEcto.Changeset do
+  @moduledoc """
+  Set of utils for Ecto.Changeset
+  """
   import Ecto.Changeset,
     only: [
       add_error: 3,

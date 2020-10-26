@@ -1,4 +1,7 @@
 defmodule AntlUtilsEcto.Query do
+  @moduledoc """
+  Set of utils for Ecto.Query
+  """
   import Ecto.Query, only: [from: 2]
 
   @spec where(any, atom, nil | binary | [any] | integer) :: Ecto.Query.t()

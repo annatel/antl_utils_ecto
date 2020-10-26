@@ -1,4 +1,7 @@
 defmodule AntlUtilsEcto do
+  @doc """
+  Recursive Schema to map function.
+  """
   @spec map_from_struct(map) :: map
   def map_from_struct(%_{__meta__: %{__struct__: _}} = schema) when is_map(schema) do
     schema
