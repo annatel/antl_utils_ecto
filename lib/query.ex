@@ -6,16 +6,16 @@ defmodule AntlUtilsEcto.Query do
     from(q in queryable, where: is_nil(field(q, ^key)))
   end
 
-  def where(queryable, key, value) when is_atom(key) and is_integer(value) do
-    from(q in queryable, where: field(q, ^key) == ^value)
-  end
-
-  def where(queryable, key, value) when is_atom(key) and is_binary(value) do
-    from(q in queryable, where: field(q, ^key) == ^value)
-  end
-
   def where(queryable, key, value) when is_atom(key) and length(value) > 0 do
     from(q in queryable, where: field(q, ^key) in ^value)
+  end
+
+  # def where(queryable, key, value) when is_atom(key) and is_boolean(value) do
+  #   from(q in queryable, where: field(q, ^key) == ^value)
+  # end
+
+  def where(queryable, key, value) when is_atom(key) do
+    from(q in queryable, where: field(q, ^key) == ^value)
   end
 
   @spec where_like(any, atom, binary) :: Ecto.Query.t()
@@ -29,12 +29,12 @@ defmodule AntlUtilsEcto.Query do
     from(q in queryable, or_where: is_nil(field(q, ^key)))
   end
 
-  def or_where(queryable, key, value) when is_atom(key) and is_binary(value) do
-    from(q in queryable, or_where: field(q, ^key) == ^value)
-  end
-
   def or_where(queryable, key, value) when is_atom(key) and length(value) > 0 do
     from(q in queryable, or_where: field(q, ^key) in ^value)
+  end
+
+  def or_where(queryable, key, value) when is_atom(key) do
+    from(q in queryable, or_where: field(q, ^key) == ^value)
   end
 
   @spec or_where_like(any, atom, binary) :: Ecto.Query.t()

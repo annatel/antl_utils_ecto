@@ -1,16 +1,20 @@
 defmodule AntlUtilsEcto.MixProject do
   use Mix.Project
 
+  @source_url "https://github.com/annatel/antl_utils_ecto"
+  @version "0.5.0"
+
   def project do
     [
       app: :antl_utils_ecto,
-      version: "0.4.0",
+      version: @version,
       elixir: "~> 1.8",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
-      deps: deps()
+      deps: deps(),
+      docs: docs()
     ]
   end
 
@@ -39,7 +43,17 @@ defmodule AntlUtilsEcto.MixProject do
   defp package() do
     [
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/annatel/antl_utils_ecto"}
+      links: %{"GitHub" => @source_url}
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      source_url: @source_url,
+      extras: [
+        "README.md"
+      ]
     ]
   end
 end

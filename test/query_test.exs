@@ -35,6 +35,18 @@ defmodule AntlUtilsEcto.QueryTest do
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
     end
 
+    test "where equal boolean" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.where(:name, true)
+      %{wheres: [where_2]} = from(q in SchemaWhere, where: q.name == ^true)
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.where(:name, false)
+      %{wheres: [where_2]} = from(q in SchemaWhere, where: q.name == ^false)
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
     test "where in" do
       %{wheres: [where_1]} =
         SchemaWhere |> EctoQueryUtils.where(:name, ["eliel", "laetitia", "jeremy"])
@@ -61,9 +73,23 @@ defmodule AntlUtilsEcto.QueryTest do
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
     end
 
-    test "or_where equal" do
+    test "or_where equal binary" do
       %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.or_where(:name, "eliel")
       %{wheres: [where_2]} = from(q in SchemaWhere, or_where: q.name == ^"eliel")
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "or_where equal integer" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.or_where(:name, 1)
+      %{wheres: [where_2]} = from(q in SchemaWhere, or_where: q.name == ^1)
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "or_where equal boolean" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.or_where(:name, false)
+      %{wheres: [where_2]} = from(q in SchemaWhere, or_where: q.name == ^false)
 
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
     end
