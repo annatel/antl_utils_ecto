@@ -13,10 +13,6 @@ defmodule AntlUtilsEcto.Query do
     from(q in queryable, where: field(q, ^key) in ^value)
   end
 
-  # def where(queryable, key, value) when is_atom(key) and is_boolean(value) do
-  #   from(q in queryable, where: field(q, ^key) == ^value)
-  # end
-
   def where(queryable, key, value) when is_atom(key) do
     from(q in queryable, where: field(q, ^key) == ^value)
   end
