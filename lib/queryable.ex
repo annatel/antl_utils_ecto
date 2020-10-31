@@ -45,6 +45,7 @@ defmodule AntlUtilsEcto.Queryable do
 
       def search(queryable, search_query, metadata \\ [], searchable_fields \\ @searchable_fields)
       def search(queryable, nil, _metadata, _searchable_fields), do: queryable
+      def search(queryable, "", _metadata, _searchable_fields), do: queryable
 
       def search(queryable, search_query, metadata, searchable_fields)
           when is_binary(search_query) and is_list(metadata),

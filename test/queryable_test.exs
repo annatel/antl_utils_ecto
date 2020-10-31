@@ -91,6 +91,14 @@ defmodule AntlUtilsEcto.QueryableTest do
       assert Parent.queryable() == query
     end
 
+    test "when search_query is an empty string return the queryable" do
+      search_query = ""
+
+      query = Parent.queryable() |> Parent.search(search_query)
+
+      assert Parent.queryable() == query
+    end
+
     test "ignore non searchable fields" do
       search_query = "toto"
 
