@@ -2,6 +2,8 @@ defmodule AntlUtilsEcto.Query do
   @moduledoc """
   Set of utils for Ecto.Query
   """
+  @type status :: :ended | :ongoing | :scheduled
+
   import Ecto.Query, only: [dynamic: 2, from: 2]
 
   @spec where(any, atom, nil | binary | [any] | integer) :: Ecto.Query.t()
@@ -23,7 +25,7 @@ defmodule AntlUtilsEcto.Query do
     from(q in queryable, where: like(field(q, ^key), ^like_value))
   end
 
-  @spec where_period_status(Ecto.Queryable.t(), atom | list(atom), atom, atom, DateTime.t()) ::
+  @spec where_period_status(Ecto.Queryable.t(), status | list(status), atom, atom, DateTime.t()) ::
           Ecto.Query.t()
   def where_period_status(
         queryable,
