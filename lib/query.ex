@@ -2,7 +2,9 @@ defmodule AntlUtilsEcto.Query do
   @moduledoc """
   Set of utils for Ecto.Query
   """
-  import Ecto.Query, only: [from: 2]
+  @type status :: :ended | :ongoing | :scheduled
+
+  import Ecto.Query, only: [dynamic: 2, from: 2]
 
   @spec where(any, atom, nil | binary | [any] | integer) :: Ecto.Query.t()
   def where(queryable, key, nil) when is_atom(key) do
@@ -21,6 +23,26 @@ defmodule AntlUtilsEcto.Query do
   def where_like(queryable, key, value) when is_atom(key) and is_binary(value) do
     like_value = "%#{String.replace(value, "%", "\\%")}%"
     from(q in queryable, where: like(field(q, ^key), ^like_value))
+  end
+
+  @spec where_period_status(Ecto.Queryable.t(), status | list(status), atom, atom, DateTime.t()) ::
+          Ecto.Query.t()
+  def where_period_status(
+        queryable,
+        status,
+        start_at_key,
+        end_at_key,
+        %DateTime{} = datetime
+      ) do
+    conditions =
+      status
+      |> List.wrap()
+      |> Enum.reduce(
+        Ecto.Query.dynamic(false),
+        &status_dynamic_expression(&2, &1, start_at_key, end_at_key, datetime)
+      )
+
+    from(q in queryable, where: ^conditions)
   end
 
   @spec or_where(any, atom, nil | binary | [any]) :: Ecto.Query.t()
@@ -47,13 +69,61 @@ defmodule AntlUtilsEcto.Query do
       when is_atom(start_at_key) and is_atom(end_at_key) do
     from(q in queryable,
       where:
-        field(q, ^start_at_key) <= ^datetime and
-          (field(q, ^end_at_key) > ^datetime or is_nil(field(q, ^end_at_key)))
+        ^status_dynamic_expression(
+          Ecto.Query.dynamic(false),
+          :ongoing,
+          start_at_key,
+          end_at_key,
+          datetime
+        )
     )
   end
 
   @spec order_by(any, atom, :asc | :desc) :: Ecto.Query.t()
   def order_by(queryable, key, order) when is_atom(key) and order in [:asc, :desc] do
     from(q in queryable, order_by: [{^order, field(q, ^key)}])
+  end
+
+  defp status_dynamic_expression(
+         dynamic,
+         :ongoing,
+         start_at_key,
+         end_at_key,
+         %DateTime{} = datetime
+       ) do
+    dynamic(
+      [q],
+      ^dynamic or
+        (field(q, ^start_at_key) <= ^datetime and
+           (field(q, ^end_at_key) > ^datetime or is_nil(field(q, ^end_at_key))))
+    )
+  end
+
+  defp status_dynamic_expression(
+         dynamic,
+         :ended,
+         start_at_key,
+         end_at_key,
+         %DateTime{} = datetime
+       ) do
+    dynamic(
+      [q],
+      ^dynamic or (field(q, ^start_at_key) <= ^datetime and field(q, ^end_at_key) <= ^datetime)
+    )
+  end
+
+  defp status_dynamic_expression(
+         dynamic,
+         :scheduled,
+         start_at_key,
+         end_at_key,
+         %DateTime{} = datetime
+       ) do
+    dynamic(
+      [q],
+      ^dynamic or
+        (field(q, ^start_at_key) > ^datetime and
+           (field(q, ^end_at_key) > ^datetime or is_nil(field(q, ^end_at_key))))
+    )
   end
 end
