@@ -10,6 +10,8 @@ defmodule AntlUtilsEcto.QueryTest do
 
     embedded_schema do
       field(:name, :string)
+      field(:start_at, :utc_datetime)
+      field(:end_at, :utc_datetime)
     end
   end
 
@@ -63,6 +65,66 @@ defmodule AntlUtilsEcto.QueryTest do
     %{wheres: [where_2]} = from(q in SchemaWhere, where: like(q.name, ^"%foo%"))
 
     assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+  end
+
+  describe "where_period_status/5" do
+    test "ongoing" do
+      datetime = DateTime.utc_now()
+
+      %{wheres: [where_1]} =
+        SchemaWhere |> EctoQueryUtils.where_period_status(:ongoing, :start_at, :end_at, datetime)
+
+      %{wheres: [where_2]} =
+        from(q in SchemaWhere,
+          where: false or (q.start_at <= ^datetime and (q.end_at > ^datetime or is_nil(q.end_at)))
+        )
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "ended" do
+      datetime = DateTime.utc_now()
+
+      %{wheres: [where_1]} =
+        SchemaWhere |> EctoQueryUtils.where_period_status(:ended, :start_at, :end_at, datetime)
+
+      %{wheres: [where_2]} =
+        from(q in SchemaWhere, where: false or (q.start_at <= ^datetime and q.end_at <= ^datetime))
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "scheduled" do
+      datetime = DateTime.utc_now()
+
+      %{wheres: [where_1]} =
+        SchemaWhere
+        |> EctoQueryUtils.where_period_status(:scheduled, :start_at, :end_at, datetime)
+
+      %{wheres: [where_2]} =
+        from(q in SchemaWhere,
+          where: false or (q.start_at > ^datetime and (q.end_at > ^datetime or is_nil(q.end_at)))
+        )
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "multiple statuses" do
+      datetime = DateTime.utc_now()
+
+      %{wheres: [where_1]} =
+        SchemaWhere
+        |> EctoQueryUtils.where_period_status([:ended, :ongoing], :start_at, :end_at, datetime)
+
+      %{wheres: [where_2]} =
+        from(q in SchemaWhere,
+          where:
+            false or (q.start_at <= ^datetime and q.end_at <= ^datetime) or
+              (q.start_at <= ^datetime and (q.end_at > ^datetime or is_nil(q.end_at)))
+        )
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
   end
 
   describe "or_where/3" do
