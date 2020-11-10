@@ -23,7 +23,7 @@ defmodule AntlUtilsEcto.Paginator do
 
   """
 
-  @spec paginate(any, pos_integer(), pos_integer()) :: Ecto.Query.t()
+  @spec paginate(any, pos_integer, pos_integer) :: Ecto.Query.t()
   def paginate(queryable, page_number, page_size) when page_number > 0 and page_size > 0 do
     offset = page_size * (page_number - 1)
 
