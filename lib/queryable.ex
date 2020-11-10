@@ -4,9 +4,9 @@ defmodule AntlUtilsEcto.Queryable do
   """
 
   @callback queryable() :: Ecto.Queryable.t()
-  @callback paginate(Ecto.Queryable.t(), integer, keyword) :: Ecto.Queryable.t()
+  @callback paginate(Ecto.Queryable.t(), pos_integer(), pos_integer()) :: Ecto.Queryable.t()
   @callback sort(Ecto.Queryable.t(), map) :: Ecto.Queryable.t()
-  @callback filter(Ecto.Queryable.t(), map) :: Ecto.Queryable.t()
+  @callback filter(Ecto.Queryable.t(), list) :: Ecto.Queryable.t()
   @callback search(Ecto.Queryable.t(), binary) :: Ecto.Queryable.t()
 
   defmacro __using__(opts) do
