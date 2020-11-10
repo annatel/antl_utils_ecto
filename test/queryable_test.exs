@@ -61,9 +61,23 @@ defmodule AntlUtilsEcto.QueryableTest do
 
   describe "filter/2" do
     test "without override use the default filter" do
-      %{wheres: [where_1]} = Parent.queryable() |> Parent.filter(%{field1: "123456"})
+      %{wheres: [where_1]} = Parent.queryable() |> Parent.filter([field1: "123456"], [:field1])
 
       %{wheres: [where_2]} = from(p in Parent, where: p.field1 == ^"123456")
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+      assert Macro.to_string(where_1.params) == Macro.to_string(where_2.params)
+    end
+
+    test "ignore non listed filters" do
+      assert Parent.queryable() |> Parent.filter(field1: "123456") == Parent.queryable()
+    end
+
+    test "default filters" do
+      %{wheres: [where_1]} =
+        ParentWithDefaultFilter.queryable() |> ParentWithDefaultFilter.filter(field1: "123456")
+
+      %{wheres: [where_2]} = from(p in ParentWithDefaultFilter, where: p.field1 == ^"123456")
 
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
       assert Macro.to_string(where_1.params) == Macro.to_string(where_2.params)
@@ -72,7 +86,7 @@ defmodule AntlUtilsEcto.QueryableTest do
     test "with an override" do
       %{wheres: [where_1]} =
         ParentWithFilterOverrided.queryable()
-        |> ParentWithFilterOverrided.filter(%{field1: "123456"})
+        |> ParentWithFilterOverrided.filter([field1: "123456"], [:field1])
 
       %{wheres: [where_2]} =
         ParentWithFilterOverrided |> EctoQueryUtils.where_like(:field1, "123456")

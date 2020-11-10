@@ -18,6 +18,7 @@ defmodule AntlUtilsEcto.Queryable do
 
       @sortable_fields Keyword.get(unquote(opts), :sortable_fields, [:inserted_at, :updated_at])
       @searchable_fields Keyword.get(unquote(opts), :searchable_fields, [:id])
+      @filter_fields Keyword.get(unquote(opts), :filter_fields, [])
 
       def queryable(), do: Keyword.get(unquote(opts), :base_schema, __MODULE__)
       defoverridable queryable: 0
@@ -40,8 +41,16 @@ defmodule AntlUtilsEcto.Queryable do
         unquote(__MODULE__).sort(queryable, sort_params)
       end
 
-      def filter(queryable, filters),
-        do: Enum.reduce(filters, queryable, &filter_by_field(&1, &2))
+      def filter(queryable, filters, filter_fields \\ @filter_fields)
+
+      def filter(queryable, filters, filter_fields) when is_list(filters),
+        do: Enum.reduce(filters, queryable, &filter(&2, &1, filter_fields))
+
+      def filter(queryable, {key, value} = filter, filter_fields) when is_list(filter_fields) do
+        if key in filter_fields,
+          do: filter_by_field(filter, queryable),
+          else: queryable
+      end
 
       def search(queryable, search_query, metadata \\ [], searchable_fields \\ @searchable_fields)
       def search(queryable, nil, _metadata, _searchable_fields), do: queryable

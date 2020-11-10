@@ -36,6 +36,15 @@ defmodule ParentWithSortableFields do
   end
 end
 
+defmodule ParentWithDefaultFilter do
+  use Ecto.Schema
+  use AntlUtilsEcto.Queryable, filter_fields: [:field1]
+
+  embedded_schema do
+    field(:field1, :string)
+  end
+end
+
 defmodule ParentWithFilterOverrided do
   use Ecto.Schema
   use AntlUtilsEcto.Queryable
