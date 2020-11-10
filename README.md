@@ -7,7 +7,7 @@ Set of utils about datetime for Ecto.Changeset, Ecto.Query
 
 ## Installation
 
-AntlUtilsEcto is published on [Hex](https://hex.pm/packages/antl_utils_ecto).
+AntlUtilsEcto is published on [Hex](https://hex.pm/packages/antl_utils_ecto).  
 The package can be installed by adding `antl_utils_ecto` to your list of dependencies in mix.exs:
 
 ```elixir
