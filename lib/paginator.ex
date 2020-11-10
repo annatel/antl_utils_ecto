@@ -5,8 +5,6 @@ defmodule AntlUtilsEcto.Paginator do
 
   import Ecto.Query, only: [limit: 2, offset: 2]
 
-  @per_page 100
-
   @doc """
   Paginate.
 
@@ -14,20 +12,19 @@ defmodule AntlUtilsEcto.Paginator do
 
     iex> queryable = from u in "products"
     #Ecto.Query<from p0 in "products">
-    iex> Paginator.paginate(queryable, 1)
+    iex> Paginator.paginate(queryable, 1, 100)
     #Ecto.Query<from p0 in "products", limit: ^100, offset: ^0>
-    iex> Paginator.paginate(queryable, 2)
+    iex> Paginator.paginate(queryable, 2, 100)
     #Ecto.Query<from p0 in "products", limit: ^100, offset: ^100>
-    iex> Paginator.paginate(queryable, 3)
+    iex> Paginator.paginate(queryable, 3, 100)
     #Ecto.Query<from p0 in "products", limit: ^100, offset: ^200>
-    iex> Paginator.paginate(queryable, 3, [per_page: 10])
+    iex> Paginator.paginate(queryable, 3, 10)
     #Ecto.Query<from p0 in "products", limit: ^10, offset: ^20>
 
   """
-  @spec paginate(any, number, keyword) :: Ecto.Query.t()
-  def paginate(queryable, page, opts \\ []) when page > 0 do
-    per_page = Keyword.get(opts, :per_page, @per_page)
 
+  @spec paginate(any, integer(), integer()) :: Ecto.Query.t()
+  def paginate(queryable, page, per_page) when page > 0 and per_page > 0 do
     offset = per_page * (page - 1)
 
     queryable
