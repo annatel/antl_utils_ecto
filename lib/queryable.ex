@@ -22,8 +22,8 @@ defmodule AntlUtilsEcto.Queryable do
       def queryable(), do: Keyword.get(unquote(opts), :base_schema, __MODULE__)
       defoverridable queryable: 0
 
-      def paginate(queryable, page, opts \\ []),
-        do: unquote(__MODULE__).paginate(queryable, page, opts)
+      def paginate(queryable, page_number, page_size),
+        do: unquote(__MODULE__).paginate(queryable, page_number, page_size)
 
       def sort(queryable, sort_params \\ %{})
 
@@ -83,9 +83,9 @@ defmodule AntlUtilsEcto.Queryable do
 
   import Ecto.Query, only: [dynamic: 2]
 
-  @spec paginate(any, number, keyword) :: Ecto.Query.t()
-  def paginate(queryable, page, opts \\ []) do
-    queryable |> AntlUtilsEcto.Paginator.paginate(page, opts)
+  @spec paginate(any, pos_integer(), pos_integer()) :: Ecto.Query.t()
+  def paginate(queryable, page_number, page_size) do
+    queryable |> AntlUtilsEcto.Paginator.paginate(page_number, page_size)
   end
 
   @spec sort(any, map) :: Ecto.Queryable.t()
