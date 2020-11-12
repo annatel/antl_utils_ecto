@@ -58,6 +58,15 @@ defmodule ParentWithSearchableFields do
   end
 end
 
+defmodule ParentWithSortableFields do
+  use Ecto.Schema
+  use AntlUtilsEcto.Queryable, sortable_fields: [:field1, :field2]
+
+  embedded_schema do
+    field(:field1, :string)
+  end
+end
+
 defmodule ParentWithSearchOverrided do
   use Ecto.Schema
   use AntlUtilsEcto.Queryable, searchable_fields: [:field1]

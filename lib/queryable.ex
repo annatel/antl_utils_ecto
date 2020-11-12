@@ -22,6 +22,10 @@ defmodule AntlUtilsEcto.Queryable do
       def queryable(), do: Keyword.get(unquote(opts), :base_schema, __MODULE__)
       defoverridable queryable: 0
 
+      def searchable_fields(), do: @searchable_fields
+
+      def sortable_fields(), do: @sortable_fields
+
       def paginate(queryable, page_number, page_size),
         do: unquote(__MODULE__).paginate(queryable, page_number, page_size)
 

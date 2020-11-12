@@ -16,8 +16,13 @@ defmodule AntlUtilsEcto.QueryableTest do
     end
   end
 
-  # describe "paginate" do
-  # end
+  test "searchable_fields/0" do
+    assert ParentWithSearchableFields.searchable_fields() == [:field1, :field2]
+  end
+
+  test "sortable_fields/0" do
+    assert ParentWithSortableFields.sortable_fields() == [:field1, :field2]
+  end
 
   describe "sort/2" do
     test "raises when field is not sortable" do
