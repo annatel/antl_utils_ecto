@@ -6,7 +6,7 @@ defmodule AntlUtilsEcto.Query do
 
   import Ecto.Query, only: [dynamic: 2, from: 2]
 
-  @spec where(any, atom, nil | binary | [any] | integer) :: Ecto.Query.t()
+  @spec where(any, atom, nil | binary | [any] | integer | boolean) :: Ecto.Query.t()
   def where(queryable, key, nil) when is_atom(key) do
     from(q in queryable, where: is_nil(field(q, ^key)))
   end

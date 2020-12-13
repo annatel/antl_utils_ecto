@@ -13,17 +13,17 @@ The package can be installed by adding `antl_utils_ecto` to your list of depende
 ```elixir
 def deps do
   [
-    {:antl_utils_ecto, "~> 1.1.0"}
+    {:antl_utils_ecto, "~> 1.1.1"}
   ]
 end
 ```
 
 The docs can be found at [https://hexdocs.pm/antl_utils_ecto](https://hexdocs.pm/antl_utils_ecto).
 
-## AntlUtils*
+## AntlUtils\*
 
 All AntlUtils libraries by Annatel:
 
-* [AntlUtilsElixir](https://github.com/annatel/antl_utils_elixir) - Set of utils for Elixir
-* [AntlUtilsEcto](https://github.com/annatel/antl_utils_ecto) - Set of utils for Ecto
-* [AntlUtilsAbsinthe](https://github.com/annatel/antl_utils_absinthe) - Set of utils for Absinthe
+- [AntlUtilsElixir](https://github.com/annatel/antl_utils_elixir) - Set of utils for Elixir
+- [AntlUtilsEcto](https://github.com/annatel/antl_utils_ecto) - Set of utils for Ecto
+- [AntlUtilsAbsinthe](https://github.com/annatel/antl_utils_absinthe) - Set of utils for Absinthe
