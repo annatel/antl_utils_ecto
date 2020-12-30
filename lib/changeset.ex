@@ -583,7 +583,7 @@ defmodule AntlUtilsEcto.Changeset do
     end
   end
 
-  @spec validate_datetime_gt(Ecto.Changeset.t(), atom() | nil | DateTime.t(), atom(), keyword) ::
+  @spec validate_datetime_gt(Ecto.Changeset.t(), atom, atom | nil | DateTime.t(), keyword) ::
           Ecto.Changeset.t()
   def validate_datetime_gt(changeset, datetime_key, referal, opts \\ [])
 
@@ -615,7 +615,7 @@ defmodule AntlUtilsEcto.Changeset do
     end
   end
 
-  @spec validate_datetime_gte(Ecto.Changeset.t(), atom() | nil | DateTime.t(), atom(), keyword) ::
+  @spec validate_datetime_gte(Ecto.Changeset.t(), atom, atom | nil | DateTime.t(), keyword) ::
           Ecto.Changeset.t()
   def validate_datetime_gte(changeset, datetime_key, referal, opts \\ [])
 
