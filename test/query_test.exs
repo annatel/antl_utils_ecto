@@ -173,11 +173,4 @@ defmodule AntlUtilsEcto.QueryTest do
 
     assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
   end
-
-  test "order_by/3" do
-    %{order_bys: [order_by_1]} = SchemaWhere |> EctoQueryUtils.order_by(:name, :asc)
-    %{order_bys: [order_by_2]} = from(q in SchemaWhere, order_by: [asc: :name])
-
-    assert Macro.to_string(order_by_1.expr) == Macro.to_string(order_by_2.expr)
-  end
 end

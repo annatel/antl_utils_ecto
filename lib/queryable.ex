@@ -5,7 +5,6 @@ defmodule AntlUtilsEcto.Queryable do
 
   @callback queryable() :: Ecto.Queryable.t()
   @callback paginate(Ecto.Queryable.t(), pos_integer, pos_integer) :: Ecto.Queryable.t()
-  @callback sort(Ecto.Queryable.t(), map) :: Ecto.Queryable.t()
   @callback filter(Ecto.Queryable.t(), keyword) :: Ecto.Queryable.t()
   @callback search(Ecto.Queryable.t(), binary) :: Ecto.Queryable.t()
 
@@ -16,7 +15,6 @@ defmodule AntlUtilsEcto.Queryable do
 
       import Ecto.Query, only: [dynamic: 2, where: 2]
 
-      @sortable_fields Keyword.get(unquote(opts), :sortable_fields, [:inserted_at, :updated_at])
       @searchable_fields Keyword.get(unquote(opts), :searchable_fields, [:id])
 
       def queryable(), do: Keyword.get(unquote(opts), :base_schema, __MODULE__)
@@ -24,25 +22,8 @@ defmodule AntlUtilsEcto.Queryable do
 
       def searchable_fields(), do: @searchable_fields
 
-      def sortable_fields(), do: @sortable_fields
-
       def paginate(queryable, page_number, page_size),
         do: unquote(__MODULE__).paginate(queryable, page_number, page_size)
-
-      def sort(queryable, sort_params \\ %{})
-
-      def sort(queryable, %{field: field, order: _order} = sort_params) do
-        handle_sort(queryable, sort_params)
-      end
-
-      def sort(queryable, %{}) do
-        sort(queryable, %{field: List.first(@sortable_fields), order: :desc})
-      end
-
-      defp handle_sort(queryable, %{field: field, order: _order} = sort_params)
-           when field in @sortable_fields do
-        unquote(__MODULE__).sort(queryable, sort_params)
-      end
 
       def filter(queryable, filters),
         do: Enum.reduce(filters, queryable, &filter_by_field(&1, &2))
@@ -90,12 +71,6 @@ defmodule AntlUtilsEcto.Queryable do
   @spec paginate(any, pos_integer(), pos_integer()) :: Ecto.Query.t()
   def paginate(queryable, page_number, page_size) do
     queryable |> AntlUtilsEcto.Paginator.paginate(page_number, page_size)
-  end
-
-  @spec sort(any, map) :: Ecto.Queryable.t()
-  def sort(queryable, %{field: field, order: order})
-      when is_atom(field) and order in [:asc, :desc] do
-    queryable |> AntlUtilsEcto.Query.order_by(field, order)
   end
 
   @spec filter_by_field({any, any}, any) :: Ecto.Query.t()

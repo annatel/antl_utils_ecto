@@ -20,50 +20,6 @@ defmodule AntlUtilsEcto.QueryableTest do
     assert ParentWithSearchableFields.searchable_fields() == [:field1, :field2]
   end
 
-  test "sortable_fields/0" do
-    assert ParentWithSortableFields.sortable_fields() == [:field1, :field2]
-  end
-
-  describe "sort/2" do
-    test "raises when field is not sortable" do
-      assert_raise FunctionClauseError, fn ->
-        Parent.queryable()
-        |> Parent.sort(%{field: :to_operator, order: :asc})
-      end
-    end
-
-    test "with no sort_params, sort by the first sortable_field desc" do
-      %{order_bys: [order_by_1]} = Parent.queryable() |> Parent.sort()
-      %{order_bys: [order_by_2]} = Parent.queryable() |> Parent.sort(%{})
-
-      %{order_bys: [order_by_3]} =
-        ParentWithSortableFields.queryable() |> ParentWithSortableFields.sort(%{})
-
-      assert [desc: {{_, _, [_, :inserted_at]}, _, _}] = order_by_1.expr
-      assert [desc: {{_, _, [_, :inserted_at]}, _, _}] = order_by_2.expr
-      assert [desc: {{_, _, [_, :field1]}, _, _}] = order_by_3.expr
-    end
-
-    test "with a sort_params that is not an atom" do
-      assert_raise FunctionClauseError, fn ->
-        Parent.queryable() |> Parent.sort(%{field: "inserted_at", order: :asc})
-      end
-    end
-
-    test "with a order_params that is not an atom" do
-      assert_raise FunctionClauseError, fn ->
-        Parent.queryable() |> Parent.sort(%{field: :inserted_at, order: "asc"})
-      end
-    end
-
-    test "with a valid sort_params" do
-      %{order_bys: [order_by]} = Parent.queryable() |> Parent.sort()
-      Parent.queryable() |> Parent.sort(%{field: :inserted_at, order: :asc})
-
-      assert [desc: {{_, _, [_, :inserted_at]}, _, _}] = order_by.expr
-    end
-  end
-
   describe "filter/2" do
     test "without override use the default filter" do
       %{wheres: [where_1]} = Parent.queryable() |> Parent.filter(%{field1: "123456"})

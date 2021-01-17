@@ -79,11 +79,6 @@ defmodule AntlUtilsEcto.Query do
     )
   end
 
-  @spec order_by(any, atom, :asc | :desc) :: Ecto.Query.t()
-  def order_by(queryable, key, order) when is_atom(key) and order in [:asc, :desc] do
-    from(q in queryable, order_by: [{^order, field(q, ^key)}])
-  end
-
   defp status_dynamic_expression(
          dynamic,
          :ongoing,
