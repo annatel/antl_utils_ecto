@@ -8,12 +8,13 @@ defmodule AntlUtilsEctoTest do
 
     schema "" do
       field(:name, :string)
+      field(:wives, {:array, :string}, default: [])
       has_many(:children, Schema)
     end
 
     def changeset(%__MODULE__{} = schema, attrs) do
       schema
-      |> Ecto.Changeset.cast(attrs, [:name])
+      |> Ecto.Changeset.cast(attrs, [:name, :wives])
       |> Ecto.Changeset.cast_assoc(:children)
     end
   end
@@ -23,6 +24,7 @@ defmodule AntlUtilsEctoTest do
       %Schema{}
       |> Schema.changeset(%{
         name: "abraham",
+        wives: ["sarah", "hagar"],
         children: [
           %{
             name: "isaac",

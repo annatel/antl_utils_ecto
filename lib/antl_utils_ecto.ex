@@ -27,4 +27,6 @@ defmodule AntlUtilsEcto do
       Map.put_new(acc, key, value)
     end)
   end
+
+  def map_from_struct(value), do: value
 end
