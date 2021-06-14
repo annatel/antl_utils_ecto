@@ -98,7 +98,7 @@ defmodule AntlUtilsEcto.Queryable do
 
   @spec paginate(any, pos_integer(), pos_integer()) :: Ecto.Query.t()
   def paginate(queryable, page_size, page_number) do
-    queryable |> AntlUtilsEcto.Paginator.paginate(page_number, page_size)
+    queryable |> AntlUtilsEcto.Paginator.paginate(page_size, page_number)
   end
 
   @spec search_by_field(Ecto.Query.DynamicExpr.t(), {any, binary}) :: Ecto.Query.DynamicExpr.t()
