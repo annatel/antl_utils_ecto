@@ -36,8 +36,8 @@ defmodule AntlUtilsEcto.Queryable do
       def order_by(queryable, order_bys),
         do: unquote(__MODULE__).order_by(queryable, order_bys)
 
-      def paginate(queryable, page_number, page_size),
-        do: unquote(__MODULE__).paginate(queryable, page_number, page_size)
+      def paginate(queryable, page_size, page_number),
+        do: unquote(__MODULE__).paginate(queryable, page_size, page_number)
 
       def search(queryable, search_query, metadata \\ [], searchable_fields \\ @searchable_fields)
       def search(queryable, nil, _metadata, _searchable_fields), do: queryable
@@ -97,7 +97,7 @@ defmodule AntlUtilsEcto.Queryable do
   end
 
   @spec paginate(any, pos_integer(), pos_integer()) :: Ecto.Query.t()
-  def paginate(queryable, page_number, page_size) do
+  def paginate(queryable, page_size, page_number) do
     queryable |> AntlUtilsEcto.Paginator.paginate(page_number, page_size)
   end
 
