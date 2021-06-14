@@ -14,7 +14,13 @@ defmodule AntlUtilsEcto.RepoTest do
     test "paginate" do
       for i <- 1..5, do: %Schema{id: i} |> TestRepo.insert!()
 
-      TestRepo.paginate(Schema, 1, 5)
+      assert %{
+               data: [%AntlUtilsEcto.RepoTest.Schema{}],
+               page_number: 1,
+               page_size: 1,
+               total: 1
+             } = TestRepo.paginate(Schema, 1, 1)
+
       assert_received {:all, query}
 
       assert inspect(query) ==

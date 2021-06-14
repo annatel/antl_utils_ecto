@@ -9,7 +9,12 @@ defmodule AntlUtilsEcto.Repo do
 
         pagination_query = queryable |> AntlUtilsEcto.Paginator.paginate(page_size, page_number)
 
-        %{total: repo.aggregate(queryable, :count, :id), data: repo.all(pagination_query)}
+        %{
+          total: repo.aggregate(queryable, :count, :id),
+          data: repo.all(pagination_query),
+          page_number: page_number,
+          page_size: page_size
+        }
       end
     end
   end
