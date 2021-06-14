@@ -28,10 +28,10 @@ defmodule AntlUtilsEcto.Queryable do
 
       @spec include(Ecto.Queryable.t(), list()) :: Ecto.Queryable.t()
       def include(queryable, includes) when is_list(includes),
-        do: Enum.reduce(includes, queryable, &include_assoc(&1, &2))
+        do: Enum.reduce(includes, queryable, &include_assoc(&2, &1))
 
       def filter(queryable, filters),
-        do: Enum.reduce(filters, queryable, &filter_by_field(&1, &2))
+        do: Enum.reduce(filters, queryable, &filter_by_field(&2, &1))
 
       def order_by(queryable, order_bys),
         do: unquote(__MODULE__).order_by(queryable, order_bys)
@@ -53,7 +53,7 @@ defmodule AntlUtilsEcto.Queryable do
       defp search_where_query(search_query, [], searchable_fields)
            when is_list(searchable_fields) do
         searchable_fields
-        |> Enum.reduce(Ecto.Query.dynamic(false), &search_by_field({&1, search_query}, &2))
+        |> Enum.reduce(Ecto.Query.dynamic(false), &search_by_field(&2, {&1, search_query}))
       end
 
       defp search_where_query(search_query, metadata, searchable_fields)
@@ -61,7 +61,7 @@ defmodule AntlUtilsEcto.Queryable do
         searchable_fields
         |> Enum.reduce(
           Ecto.Query.dynamic(false),
-          &search_by_field({&1, search_query}, &2, metadata)
+          &search_by_field(&2, {&1, search_query}, metadata)
         )
       end
     end
@@ -69,23 +69,23 @@ defmodule AntlUtilsEcto.Queryable do
 
   defmacro __before_compile__(_env) do
     quote do
-      defp include_assoc(_, queryable), do: queryable
+      defp include_assoc(queryable, _), do: queryable
 
-      defp filter_by_field(field, queryable),
-        do: unquote(__MODULE__).filter_by_field(field, queryable)
+      defp filter_by_field(queryable, field),
+        do: unquote(__MODULE__).filter_by_field(queryable, field)
 
-      defp search_by_field(field, dynamic),
-        do: unquote(__MODULE__).search_by_field(field, dynamic)
+      defp search_by_field(dynamic, field),
+        do: unquote(__MODULE__).search_by_field(dynamic, field)
 
-      defp search_by_field(field, dynamic, metadata),
-        do: unquote(__MODULE__).search_by_field(field, dynamic, metadata)
+      defp search_by_field(dynamic, field, metadata),
+        do: unquote(__MODULE__).search_by_field(dynamic, field, metadata)
     end
   end
 
   import Ecto.Query, only: [dynamic: 2]
 
-  @spec filter_by_field({any, any}, any) :: Ecto.Query.t()
-  def filter_by_field({key, value}, queryable) do
+  @spec filter_by_field(any, {any, any}) :: Ecto.Query.t()
+  def filter_by_field(queryable, {key, value}) do
     queryable |> AntlUtilsEcto.Query.where(key, value)
   end
 
@@ -101,14 +101,15 @@ defmodule AntlUtilsEcto.Queryable do
     queryable |> AntlUtilsEcto.Paginator.paginate(page_number, page_size)
   end
 
-  @spec search_by_field({any, binary}, any) :: Ecto.Query.DynamicExpr.t()
-  def search_by_field({key, value}, dynamic) do
+  @spec search_by_field(Ecto.Query.DynamicExpr.t(), {any, binary}) :: Ecto.Query.DynamicExpr.t()
+  def search_by_field(dynamic, {key, value}) do
     like_value = "%#{String.replace(value, "%", "\\%")}%"
     dynamic([q], ^dynamic or like(field(q, ^key), ^like_value))
   end
 
-  @spec search_by_field({any, binary}, any, list()) :: Ecto.Query.DynamicExpr.t()
-  def search_by_field({key, value}, dynamic, metadata) when is_list(metadata) do
+  @spec search_by_field(Ecto.Query.DynamicExpr.t(), {any, binary}, list()) ::
+          Ecto.Query.DynamicExpr.t()
+  def search_by_field(dynamic, {key, value}, metadata) when is_list(metadata) do
     like_value = "%#{String.replace(value, "%", "\\%")}%"
     dynamic([q], ^dynamic or like(field(q, ^key), ^like_value))
   end
