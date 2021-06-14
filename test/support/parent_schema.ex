@@ -8,7 +8,7 @@ defmodule Parent do
     has_many(:childs, Child)
   end
 
-  defp include_assoc(:childs, queryable) do
+  defp include_assoc(queryable, :childs) do
     queryable |> Ecto.Query.preload(:childs)
   end
 end
@@ -39,7 +39,7 @@ defmodule ParentWithFilterOverrided do
     field(:field1, :string)
   end
 
-  defp filter_by_field({:field1, value}, queryable) do
+  defp filter_by_field(queryable, {:field1, value}) do
     queryable |> AntlUtilsEcto.Query.where_like(:field1, value)
   end
 end
@@ -72,7 +72,7 @@ defmodule ParentWithSearchOverrided do
     field(:field1, :string)
   end
 
-  defp search_by_field({:field1, value}, dynamic) do
+  defp search_by_field(dynamic, {:field1, value}) do
     dynamic([q], ^dynamic or q.field1 == ^value)
   end
 end
@@ -88,7 +88,7 @@ defmodule ParentWithSearchWithMetadataOverrided do
     field(:field2, :string)
   end
 
-  defp search_by_field({:field1, value}, dynamic, field2: field2) do
+  defp search_by_field(dynamic, {:field1, value}, field2: field2) do
     dynamic([q], ^dynamic or (q.field1 == ^value and q.field2 == ^field2))
   end
 end
