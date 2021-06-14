@@ -4,6 +4,7 @@ defmodule AntlUtilsEcto.Queryable do
   """
 
   @callback queryable() :: Ecto.Queryable.t()
+  @callback paginate(Ecto.Queryable.t(), pos_integer, pos_integer) :: Ecto.Queryable.t()
   @callback filter(Ecto.Queryable.t(), keyword) :: Ecto.Queryable.t()
   @callback search(Ecto.Queryable.t(), binary) :: Ecto.Queryable.t()
 
@@ -20,6 +21,9 @@ defmodule AntlUtilsEcto.Queryable do
       defoverridable queryable: 0
 
       def searchable_fields(), do: @searchable_fields
+
+      def paginate(queryable, page_number, page_size),
+        do: unquote(__MODULE__).paginate(queryable, page_number, page_size)
 
       def filter(queryable, filters),
         do: Enum.reduce(filters, queryable, &filter_by_field(&1, &2))
@@ -63,6 +67,11 @@ defmodule AntlUtilsEcto.Queryable do
   end
 
   import Ecto.Query, only: [dynamic: 2]
+
+  @spec paginate(any, pos_integer(), pos_integer()) :: Ecto.Query.t()
+  def paginate(queryable, page_number, page_size) do
+    queryable |> AntlUtilsEcto.Paginator.paginate(page_number, page_size)
+  end
 
   @spec filter_by_field({any, any}, any) :: Ecto.Query.t()
   def filter_by_field({key, value}, queryable) do
