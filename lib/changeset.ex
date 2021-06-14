@@ -136,9 +136,7 @@ defmodule AntlUtilsEcto.Changeset do
       Keyword.get(
         opts,
         :message,
-        "at least #{min} of #{inspect(fields)} can't be blank when #{conditional_field} is #{
-          expected_value
-        }"
+        "at least #{min} of #{inspect(fields)} can't be blank when #{conditional_field} is #{expected_value}"
       )
 
     if conditional_field_value == expected_value do
@@ -166,9 +164,7 @@ defmodule AntlUtilsEcto.Changeset do
       Keyword.get(
         opts,
         :message,
-        "at least #{min} of #{inspect(fields)} can't be blank unless #{conditional_field} is #{
-          expected_value
-        }"
+        "at least #{min} of #{inspect(fields)} can't be blank unless #{conditional_field} is #{expected_value}"
       )
 
     unless conditional_field_value == expected_value do
@@ -696,9 +692,7 @@ defmodule AntlUtilsEcto.Changeset do
       changeset
       |> add_error(
         start_at_key,
-        "#{start_at_key} and #{end_at_key} are out of bound [#{container_period.start_at}, #{
-          container_period.end_at
-        }]"
+        "#{start_at_key} and #{end_at_key} are out of bound [#{container_period.start_at}, #{container_period.end_at}]"
       )
     else
       changeset
