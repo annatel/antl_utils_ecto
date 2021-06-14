@@ -7,6 +7,10 @@ defmodule Parent do
 
     has_many(:childs, Child)
   end
+
+  defp include_assoc(:childs, queryable) do
+    queryable |> Ecto.Query.preload(:childs)
+  end
 end
 
 defmodule ParentWithQueryableOverrided do

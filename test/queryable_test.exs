@@ -43,6 +43,35 @@ defmodule AntlUtilsEcto.QueryableTest do
     end
   end
 
+  describe "include/2" do
+    test "when the assoc exists, call the include_assoc" do
+      query = Parent.queryable() |> Parent.include([:childs])
+      assert inspect(query) == "#Ecto.Query<from p0 in Parent, preload: [:childs]>"
+    end
+
+    test "when the assoc exists, include the assoc" do
+      query = Parent.queryable() |> Parent.include([:child])
+      assert inspect(query) == "Parent"
+    end
+  end
+
+  describe "order_by/2" do
+    test "when the order_by fields are empty, do not order_by" do
+      query = Parent.queryable() |> Parent.order_by([])
+      assert inspect(query) == "Parent"
+    end
+
+    test "support list of atoms" do
+      query = Parent.queryable() |> Parent.order_by([:field1])
+      assert inspect(query) == "#Ecto.Query<from p0 in Parent, order_by: [asc: p0.field1]>"
+    end
+
+    test "support keyword" do
+      query = Parent.queryable() |> Parent.order_by(desc: :field1)
+      assert inspect(query) == "#Ecto.Query<from p0 in Parent, order_by: [desc: p0.field1]>"
+    end
+  end
+
   describe "search/2" do
     test "when search_query is nil return the queryable" do
       search_query = nil
@@ -120,6 +149,23 @@ defmodule AntlUtilsEcto.QueryableTest do
       query_2 = from(p in ParentWithSearchableFields, where: false or like(p.field1, ^"%toto%"))
 
       assert inspect(query_1) == inspect(query_2)
+    end
+  end
+
+  describe "select_fields/2" do
+    test "when fields are list of atoms" do
+      query = Parent.queryable() |> Parent.select_fields([:field1])
+      assert inspect(query) == "#Ecto.Query<from p0 in Parent, select: [:field1]>"
+    end
+
+    test "when fields is an empty list, select all fields" do
+      query = Parent.queryable() |> Parent.select_fields([])
+      assert inspect(query) == "Parent"
+    end
+
+    test "when fields nil, select all fields" do
+      query = Parent.queryable() |> Parent.select_fields(nil)
+      assert inspect(query) == "Parent"
     end
   end
 end
