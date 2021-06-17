@@ -27,7 +27,7 @@ defmodule AntlUtilsEcto.Queryable do
         queryable = Keyword.get(unquote(opts), :base_schema, __MODULE__)
 
         if @has_soft_delete?,
-          do: queryable |> AntlUtilsEcto.Query.where_not(@soft_delete_field, nil),
+          do: queryable |> AntlUtilsEcto.Query.where(@soft_delete_field, nil),
           else: queryable
       end
 
