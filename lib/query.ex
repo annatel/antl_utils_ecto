@@ -19,6 +19,19 @@ defmodule AntlUtilsEcto.Query do
     from(q in queryable, where: field(q, ^key) == ^value)
   end
 
+  @spec where_not(any, atom, nil | binary | [any] | integer | boolean) :: Ecto.Query.t()
+  def where_not(queryable, key, nil) when is_atom(key) do
+    from(q in queryable, where: not is_nil(field(q, ^key)))
+  end
+
+  def where_not(queryable, key, value) when is_atom(key) and length(value) > 0 do
+    from(q in queryable, where: field(q, ^key) not in ^value)
+  end
+
+  def where_not(queryable, key, value) when is_atom(key) do
+    from(q in queryable, where: field(q, ^key) != ^value)
+  end
+
   @spec where_like(any, atom, binary) :: Ecto.Query.t()
   def where_like(queryable, key, value) when is_atom(key) and is_binary(value) do
     like_value = "%#{String.replace(value, "%", "\\%")}%"
@@ -56,6 +69,19 @@ defmodule AntlUtilsEcto.Query do
 
   def or_where(queryable, key, value) when is_atom(key) do
     from(q in queryable, or_where: field(q, ^key) == ^value)
+  end
+
+  @spec or_where_not(any, atom, nil | binary | [any]) :: Ecto.Query.t()
+  def or_where_not(queryable, key, nil) when is_atom(key) do
+    from(q in queryable, or_where: not is_nil(field(q, ^key)))
+  end
+
+  def or_where_not(queryable, key, value) when is_atom(key) and length(value) > 0 do
+    from(q in queryable, or_where: field(q, ^key) not in ^value)
+  end
+
+  def or_where_not(queryable, key, value) when is_atom(key) do
+    from(q in queryable, or_where: field(q, ^key) != ^value)
   end
 
   @spec or_where_like(any, atom, binary) :: Ecto.Query.t()

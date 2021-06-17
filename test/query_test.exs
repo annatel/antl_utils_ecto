@@ -60,6 +60,51 @@ defmodule AntlUtilsEcto.QueryTest do
     end
   end
 
+  describe "where_not/3" do
+    test "where not nil" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.where_not(:name, nil)
+      %{wheres: [where_2]} = from(q in SchemaWhere, where: not is_nil(q.name))
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "where not equal binary" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.where_not(:name, "eliel")
+      %{wheres: [where_2]} = from(q in SchemaWhere, where: q.name != ^"eliel")
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "where not equal integer" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.where_not(:name, 1)
+      %{wheres: [where_2]} = from(q in SchemaWhere, where: q.name != ^1)
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "where not equal boolean" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.where_not(:name, true)
+      %{wheres: [where_2]} = from(q in SchemaWhere, where: q.name != ^true)
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.where_not(:name, false)
+      %{wheres: [where_2]} = from(q in SchemaWhere, where: q.name != ^false)
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "where not in" do
+      %{wheres: [where_1]} =
+        SchemaWhere |> EctoQueryUtils.where_not(:name, ["eliel", "laetitia", "jeremy"])
+
+      %{wheres: [where_2]} =
+        from(q in SchemaWhere, where: q.name not in ^["eliel", "laetitia", "jeremy"])
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+  end
+
   test "where_like/3" do
     %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.where_like(:name, "foo")
     %{wheres: [where_2]} = from(q in SchemaWhere, where: like(q.name, ^"%foo%"))
@@ -162,6 +207,46 @@ defmodule AntlUtilsEcto.QueryTest do
 
       %{wheres: [where_2]} =
         from(q in SchemaWhere, or_where: q.name in ^["eliel", "laetitia", "jeremy"])
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+  end
+
+  describe "or_where_not/3" do
+    test "or_where_not nil" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.or_where_not(:name, nil)
+      %{wheres: [where_2]} = from(q in SchemaWhere, or_where: not is_nil(q.name))
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "or_where_not equal binary" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.or_where_not(:name, "eliel")
+      %{wheres: [where_2]} = from(q in SchemaWhere, or_where: q.name != ^"eliel")
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "or_where_not equal integer" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.or_where_not(:name, 1)
+      %{wheres: [where_2]} = from(q in SchemaWhere, or_where: q.name != ^1)
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "or_where_not equal boolean" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.or_where_not(:name, false)
+      %{wheres: [where_2]} = from(q in SchemaWhere, or_where: q.name != ^false)
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "or_where_not in" do
+      %{wheres: [where_1]} =
+        SchemaWhere |> EctoQueryUtils.or_where_not(:name, ["eliel", "laetitia", "jeremy"])
+
+      %{wheres: [where_2]} =
+        from(q in SchemaWhere, or_where: q.name not in ^["eliel", "laetitia", "jeremy"])
 
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
     end
