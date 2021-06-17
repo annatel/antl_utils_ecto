@@ -103,15 +103,17 @@ defmodule AntlUtilsEcto.Queryable do
 
   @spec search_by_field(Ecto.Query.DynamicExpr.t(), {any, binary}) :: Ecto.Query.DynamicExpr.t()
   def search_by_field(dynamic, {key, value}) do
+    key = to_string(key)
     like_value = "%#{String.replace(value, "%", "\\%")}%"
-    dynamic([q], ^dynamic or like(field(q, ^key), ^like_value))
+    dynamic([line], ^dynamic or like(type(fragment("?", ^key), :string), ^like_value))
   end
 
   @spec search_by_field(Ecto.Query.DynamicExpr.t(), {any, binary}, list()) ::
           Ecto.Query.DynamicExpr.t()
   def search_by_field(dynamic, {key, value}, metadata) when is_list(metadata) do
+    key = to_string(key)
     like_value = "%#{String.replace(value, "%", "\\%")}%"
-    dynamic([q], ^dynamic or like(field(q, ^key), ^like_value))
+    dynamic([q], ^dynamic or like(type(fragment("?", ^key), :string), ^like_value))
   end
 
   @spec select_fields(Ecto.Queryable.t(), nil | list) :: Ecto.Queryable.t()

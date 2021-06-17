@@ -94,7 +94,8 @@ defmodule AntlUtilsEcto.QueryableTest do
 
       query_1 = Parent.queryable() |> Parent.search(search_query)
 
-      query_2 = from(p in Parent, where: false or like(p.id, ^"%toto%"))
+      query_2 =
+        from(p in Parent, where: false or like(type(fragment("?", ^"id"), :string), ^"%toto%"))
 
       assert inspect(query_1) == inspect(query_2)
     end
@@ -107,7 +108,9 @@ defmodule AntlUtilsEcto.QueryableTest do
 
       query_2 =
         from(p in ParentWithSearchableFields,
-          where: false or like(p.field1, ^"%toto%") or like(p.field2, ^"%toto%")
+          where:
+            false or like(type(fragment("?", ^"field1"), :string), ^"%toto%") or
+              like(type(fragment("?", ^"field2"), :string), ^"%toto%")
         )
 
       assert inspect(query_1) == inspect(query_2)
@@ -146,7 +149,10 @@ defmodule AntlUtilsEcto.QueryableTest do
         ParentWithSearchableFields.queryable()
         |> ParentWithSearchableFields.search(search_query, [], [:field1])
 
-      query_2 = from(p in ParentWithSearchableFields, where: false or like(p.field1, ^"%toto%"))
+      query_2 =
+        from(p in ParentWithSearchableFields,
+          where: false or like(type(fragment("?", ^"field1"), :string), ^"%toto%")
+        )
 
       assert inspect(query_1) == inspect(query_2)
     end

@@ -4,6 +4,13 @@ defmodule AntlUtilsEcto.Repo do
   """
   defmacro __using__(_opts) do
     quote bind_quoted: [] do
+      @type paginate_result(resource_type) :: %{
+              :data => [resource_type],
+              :total => integer,
+              :page_number => integer,
+              :page_size => integer
+            }
+
       def paginate(queryable, page_size, page_number) do
         repo = unquote(__MODULE__)
 
