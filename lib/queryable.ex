@@ -20,8 +20,17 @@ defmodule AntlUtilsEcto.Queryable do
       import Ecto.Query, only: [dynamic: 2, where: 2]
 
       @searchable_fields Keyword.get(unquote(opts), :searchable_fields, [:id])
+      @soft_delete_field Keyword.get(unquote(opts), :soft_delete_field)
+      @has_soft_delete? not is_nil(@soft_delete_field)
 
-      def queryable(), do: Keyword.get(unquote(opts), :base_schema, __MODULE__)
+      def queryable() do
+        queryable = Keyword.get(unquote(opts), :base_schema, __MODULE__)
+
+        if @has_soft_delete?,
+          do: queryable |> AntlUtilsEcto.Query.where_not(@soft_delete_field, nil),
+          else: queryable
+      end
+
       defoverridable queryable: 0
 
       def searchable_fields(), do: @searchable_fields
@@ -70,6 +79,14 @@ defmodule AntlUtilsEcto.Queryable do
   defmacro __before_compile__(_env) do
     quote do
       defp include_assoc(queryable, _), do: queryable
+
+      if @has_soft_delete? do
+        defp filter_by_field(queryable, {:with_trashed, true}),
+          do: queryable |> AntlUtilsEcto.Query.or_where_not(@soft_delete_field, nil)
+
+        defp filter_by_field(queryable, {:only_trashed, true}),
+          do: queryable |> AntlUtilsEcto.Query.where_not(@soft_delete_field, nil)
+      end
 
       defp filter_by_field(queryable, field),
         do: unquote(__MODULE__).filter_by_field(queryable, field)
