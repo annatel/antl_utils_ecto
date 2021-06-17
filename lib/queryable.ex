@@ -84,8 +84,21 @@ defmodule AntlUtilsEcto.Queryable do
         defp filter_by_field(queryable, {:with_trashed, true}),
           do: queryable |> AntlUtilsEcto.Query.or_where_not(@soft_delete_field, nil)
 
-        defp filter_by_field(queryable, {:only_trashed, true}),
-          do: queryable |> AntlUtilsEcto.Query.where_not(@soft_delete_field, nil)
+        defp filter_by_field(queryable, {:only_trashed, true}) do
+          queryable
+          |> exclude_soft_delete_scope()
+          |> AntlUtilsEcto.Query.where_not(@soft_delete_field, nil)
+        end
+
+        defp exclude_soft_delete_scope(%Ecto.Query{wheres: wheres} = query) do
+          wheres =
+            wheres
+            |> Enum.reject(fn %{expr: expr} ->
+              expr == {:is_nil, [], [{{:., [], [{:&, [], [0]}, @soft_delete_field]}, [], []}]}
+            end)
+
+          %{query | wheres: wheres}
+        end
       end
 
       defp filter_by_field(queryable, field),
