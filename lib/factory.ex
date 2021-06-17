@@ -1,7 +1,10 @@
 defmodule AntlUtilsEcto.Factory do
-  @callback build(atom, map | list) :: %{:__struct__ => atom, optional(atom) => any}
+  @callback build(atom, map | list) :: %{optional(atom) => any}
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
+      @behaviour AntlUtilsEcto.Factory
+      @before_compile AntlUtilsEcto.Factory
+
       @repo Keyword.fetch!(opts, :repo)
 
       @spec uuid :: <<_::288>>
@@ -20,7 +23,7 @@ defmodule AntlUtilsEcto.Factory do
       defdelegate utc_now(), to: __MODULE__
 
       @spec add(DateTime.t(), integer, System.time_unit()) :: DateTime.t()
-      defdelegate add(%DateTime{} = datetime, amount_of_time, time_unit \\ :second),
+      defdelegate add(datetime, amount_of_time, time_unit \\ :second),
         to: __MODULE__
 
       @spec params_for(atom, Enum.t()) :: map
@@ -48,8 +51,7 @@ defmodule AntlUtilsEcto.Factory do
 
   defmacro __before_compile__(_env) do
     quote do
-      def build(factory, _) when is_atom(factory),
-        do: raise(ArgumentError, "The #{factory} is not defined")
+      def build(factory, attrs), do: raise(ArgumentError, "Factory not implemented")
     end
   end
 
