@@ -8,27 +8,29 @@ defmodule AntlUtilsEcto.Factory do
       @repo Keyword.fetch!(opts, :repo)
 
       @spec uuid :: <<_::288>>
-      defdelegate uuid(), to: __MODULE__
-
-      @spec shortcode_uuid(nil | binary) :: binary
-      defdelegate shortcode_uuid(prefix \\ nil), to: __MODULE__
+      defdelegate uuid(), to: AntlUtilsEcto.Factory
 
       @spec id :: integer
-      defdelegate id(), to: __MODULE__
+      defdelegate id(), to: AntlUtilsEcto.Factory
 
-      @spec shortcode_id(nil | binary) :: binary
-      defdelegate shortcode_id(prefix \\ nil), to: __MODULE__
+      if Code.ensure_loaded?(Shortcode) do
+        @spec shortcode_uuid(nil | binary) :: binary
+        defdelegate shortcode_uuid(prefix \\ nil), to: AntlUtilsEcto.Factory
+
+        @spec shortcode_id(nil | binary) :: binary
+        defdelegate shortcode_id(prefix \\ nil), to: AntlUtilsEcto.Factory
+      end
 
       @spec utc_now :: DateTime.t()
-      defdelegate utc_now(), to: __MODULE__
+      defdelegate utc_now(), to: AntlUtilsEcto.Factory
 
       @spec add(DateTime.t(), integer, System.time_unit()) :: DateTime.t()
       defdelegate add(datetime, amount_of_time, time_unit \\ :second),
-        to: __MODULE__
+        to: AntlUtilsEcto.Factory
 
       @spec params_for(atom, Enum.t()) :: map
       def params_for(factory_name, attributes \\ []) do
-        factory_name |> build(attributes) |> params_for()
+        factory_name |> build(attributes) |> AntlUtilsEcto.Factory.params_for()
       end
 
       @spec build(atom) :: %{:__struct__ => atom, optional(atom) => any}
