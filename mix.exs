@@ -14,7 +14,8 @@ defmodule AntlUtilsEcto.MixProject do
       description: description(),
       package: package(),
       deps: deps(),
-      docs: docs()
+      docs: docs(),
+      xref: [exclude: [Shortcode]]
     ]
   end
 
