@@ -28,10 +28,13 @@ defmodule AntlUtilsEcto.Factory do
       defdelegate add(datetime, amount_of_time, time_unit \\ :second),
         to: AntlUtilsEcto.Factory
 
+      @spec params_for(struct) :: map
+      def params_for(schema) when is_struct(schema),
+        do: AntlUtilsEcto.Factory.params_for(schema)
+
       @spec params_for(atom, Enum.t()) :: map
-      def params_for(factory_name, attributes \\ []) do
-        factory_name |> build(attributes) |> AntlUtilsEcto.Factory.params_for()
-      end
+      def params_for(factory_name, attributes \\ []),
+        do: factory_name |> build(attributes) |> params_for()
 
       @spec build(atom) :: %{:__struct__ => atom, optional(atom) => any}
       def build(factory_name), do: build(factory_name, [])
