@@ -1,7 +1,5 @@
-Application.put_env(:ecto, AntlUtilsEcto.TestRepo, user: "invalid")
-
-defmodule AntlUtilsEcto.TestRepo do
-  use Ecto.Repo, otp_app: :ecto, adapter: Ecto.TestAdapter
+defmodule AntlUtilsEcto.PaginatorRepo do
+  use Ecto.Repo, otp_app: :antl_utils_ecto, adapter: AntlUtilsEcto.TestAdapter
 
   use AntlUtilsEcto.Repo
 
