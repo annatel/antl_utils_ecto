@@ -2,7 +2,7 @@ defmodule AntlUtilsEcto.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/annatel/antl_utils_ecto"
-  @version "2.3.1"
+  @version "2.4.1"
 
   def project do
     [
@@ -14,7 +14,8 @@ defmodule AntlUtilsEcto.MixProject do
       description: description(),
       package: package(),
       deps: deps(),
-      docs: docs()
+      docs: docs(),
+      xref: [exclude: [Shortcode]]
     ]
   end
 

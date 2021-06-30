@@ -14,7 +14,7 @@ The package can be installed by adding `antl_utils_ecto` to your list of depende
 ```elixir
 def deps do
   [
-    {:antl_utils_ecto, "~> 2.3.1"}
+    {:antl_utils_ecto, "~> 2.4.1"}
   ]
 end
 ```
