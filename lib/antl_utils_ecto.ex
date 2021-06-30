@@ -3,7 +3,7 @@ defmodule AntlUtilsEcto do
   Recursive Schema to map function.
   """
   @spec map_from_struct(map) :: map
-  def map_from_struct(%_{__meta__: %{__struct__: _}} = schema) when is_map(schema) do
+  def map_from_struct(schema) when is_struct(schema) do
     schema
     |> Map.from_struct()
     |> map_from_struct()
@@ -14,7 +14,7 @@ defmodule AntlUtilsEcto do
     |> Enum.reduce(%{}, fn {key, value}, acc ->
       value =
         case value do
-          %_{__meta__: %{__struct__: _}} ->
+          value when is_struct(value) ->
             map_from_struct(value)
 
           value when is_list(value) ->
