@@ -8,7 +8,7 @@ defmodule AntlUtilsEcto.MixProject do
     [
       app: :antl_utils_ecto,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       description: description(),
