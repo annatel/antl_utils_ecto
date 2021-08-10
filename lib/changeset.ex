@@ -22,12 +22,27 @@ defmodule AntlUtilsEcto.Changeset do
     iex> assert %{password: ["is invalid"]} = AntlUtilsEcto.Changeset.errors_on(changeset)
   """
   @spec errors_on(Ecto.Changeset.t()) :: %{optional(atom) => [binary]}
-  def errors_on(changeset) do
+  def errors_on(%Ecto.Changeset{} = changeset) do
     traverse_errors(changeset, fn {message, opts} ->
       Enum.reduce(opts, message, fn {key, value}, acc ->
         String.replace(acc, "%{#{key}}", to_string(value))
       end)
     end)
+  end
+
+  @doc """
+  A helper that allows to apply function on a changeset only if it is valid.
+  Always returns the changeset
+  """
+  @spec on_valid_changeset(Ecto.Changeset.t(), (Ecto.Changeset.t() -> Ecto.Changeset.t())) ::
+          Ecto.Changeset.t()
+  def on_valid_changeset(%Ecto.Changeset{} = changeset, fun)
+      when is_function(fun) do
+    if changeset.valid? do
+      %Ecto.Changeset{} = fun.(changeset)
+    else
+      changeset
+    end
   end
 
   @spec validate_required_one_exclusive(Ecto.Changeset.t(), [any], keyword) ::

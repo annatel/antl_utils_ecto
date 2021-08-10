@@ -37,6 +37,31 @@ defmodule AntlUtilsEcto.ChangesetTest do
     end
   end
 
+  describe "on_valid_changeset" do
+    test "when changeset is valid" do
+      changeset = %Schema{} |> Ecto.Changeset.change()
+
+      assert changeset.valid?
+
+      changeset =
+        changeset |> on_valid_changeset(&Ecto.Changeset.put_change(&1, :field_1, "field_1"))
+
+      assert changeset.changes.field_1 == "field_1"
+    end
+
+    test "when changeset is not valid" do
+      changeset =
+        %Schema{}
+        |> Ecto.Changeset.change()
+        |> Ecto.Changeset.add_error(:field_1, "error")
+
+      changeset =
+        changeset |> on_valid_changeset(&Ecto.Changeset.put_change(&1, :field_1, "field_1"))
+
+      assert changeset.changes == %{}
+    end
+  end
+
   describe "validate_required_one_exclusive/2" do
     test "when only one is set" do
       changeset =
