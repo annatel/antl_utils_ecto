@@ -45,6 +45,12 @@ defmodule AntlUtilsEcto.Changeset do
     end
   end
 
+  @doc """
+  A helper that convert changeset error to string (as json encoded format).
+  """
+  @spec errors_to_json(Ecto.Changeset.t()) :: String.t()
+  def errors_to_json(%Ecto.Changeset{} = changeset), do: errors_on(changeset) |> Jason.encode!()
+
   @spec validate_required_one_exclusive(Ecto.Changeset.t(), [any], keyword) ::
           Ecto.Changeset.t()
   def validate_required_one_exclusive(%Ecto.Changeset{} = changeset, fields, opts \\ [])

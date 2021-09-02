@@ -62,6 +62,16 @@ defmodule AntlUtilsEcto.ChangesetTest do
     end
   end
 
+  test "errors_to_json/1" do
+    changeset =
+      %Schema{}
+      |> Ecto.Changeset.cast(%{}, [:field_1])
+      |> validate_required([:field_1])
+
+    refute changeset.valid?
+    assert errors_to_json(changeset) == "{\"field_1\":[\"can't be blank\"]}"
+  end
+
   describe "validate_required_one_exclusive/2" do
     test "when only one is set" do
       changeset =
