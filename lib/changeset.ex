@@ -48,8 +48,9 @@ defmodule AntlUtilsEcto.Changeset do
   @doc """
   A helper that convert changeset error to string (as json encoded format).
   """
-  @spec errors_to_json(Ecto.Changeset.t()) :: String.t()
-  def errors_to_json(%Ecto.Changeset{} = changeset), do: errors_on(changeset) |> Jason.encode!()
+  @spec json_encode_errors(Ecto.Changeset.t()) :: String.t()
+  def json_encode_errors(%Ecto.Changeset{} = changeset),
+    do: errors_on(changeset) |> Jason.encode!()
 
   @spec validate_required_one_exclusive(Ecto.Changeset.t(), [any], keyword) ::
           Ecto.Changeset.t()
@@ -106,6 +107,33 @@ defmodule AntlUtilsEcto.Changeset do
       )
 
     if conditional_field_value == expected_value do
+      changeset |> validate_required(fields, message: message)
+    else
+      changeset
+    end
+  end
+
+  @spec validate_required_if_any(Ecto.Changeset.t(), any, atom, list, keyword) ::
+          Ecto.Changeset.t()
+  def validate_required_if_any(
+        %Ecto.Changeset{} = changeset,
+        fields,
+        conditional_field,
+        expected_values,
+        opts \\ []
+      )
+      when is_atom(conditional_field) and is_list(expected_values) do
+    fields = List.wrap(fields)
+    conditional_field_value = get_field(changeset, conditional_field)
+
+    message =
+      Keyword.get(
+        opts,
+        :message,
+        "can't be blank when #{conditional_field} is one of #{Enum.join(expected_values, ", ")}"
+      )
+
+    if conditional_field_value in expected_values do
       changeset |> validate_required(fields, message: message)
     else
       changeset

@@ -62,14 +62,14 @@ defmodule AntlUtilsEcto.ChangesetTest do
     end
   end
 
-  test "errors_to_json/1" do
+  test "json_encode_errors/1" do
     changeset =
       %Schema{}
       |> Ecto.Changeset.cast(%{}, [:field_1])
       |> validate_required([:field_1])
 
     refute changeset.valid?
-    assert errors_to_json(changeset) == "{\"field_1\":[\"can't be blank\"]}"
+    assert json_encode_errors(changeset) == "{\"field_1\":[\"can't be blank\"]}"
   end
 
   describe "validate_required_one_exclusive/2" do
@@ -216,6 +216,59 @@ defmodule AntlUtilsEcto.ChangesetTest do
           [:field_1, :field_2, :field_3]
         )
         |> validate_required_if([:field_3], :field_1, "field_1")
+
+      assert changeset.valid?
+    end
+  end
+
+  describe "validate_required_if_any/4" do
+    test "the condition match and the field is present" do
+      changeset =
+        %Schema{}
+        |> Ecto.Changeset.cast(
+          %{field_1: "field_1", field_3: "field_3"},
+          [:field_1, :field_2, :field_3]
+        )
+        |> validate_required_if_any([:field_3], :field_1, ["field_1", "field_11"])
+
+      assert changeset.valid?
+    end
+
+    test "the condition match and the field is not present" do
+      changeset =
+        %Schema{}
+        |> Ecto.Changeset.cast(
+          %{field_1: "field_1"},
+          [:field_1, :field_2, :field_3]
+        )
+        |> validate_required_if_any([:field_3], :field_1, ["field_1", "field_11"])
+
+      refute changeset.valid?
+
+      assert %{field_3: ["can't be blank when field_1 is one of field_1, field_11"]} =
+               errors_on(changeset)
+    end
+
+    test "the condition does not match and the field is present" do
+      changeset =
+        %Schema{}
+        |> Ecto.Changeset.cast(
+          %{field_1: "value", field_3: "field_3"},
+          [:field_1, :field_2, :field_3]
+        )
+        |> validate_required_if_any([:field_3], :field_1, ["field_1", "field_11"])
+
+      assert changeset.valid?
+    end
+
+    test "the condition does not match and the field is not present" do
+      changeset =
+        %Schema{}
+        |> Ecto.Changeset.cast(
+          %{field_1: "value"},
+          [:field_1, :field_2, :field_3]
+        )
+        |> validate_required_if_any([:field_3], :field_1, ["field_1", "field_11"])
 
       assert changeset.valid?
     end
