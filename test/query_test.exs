@@ -58,6 +58,14 @@ defmodule AntlUtilsEcto.QueryTest do
 
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
     end
+
+    test "where in []" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.where(:name, [])
+
+      %{wheres: [where_2]} = from(q in SchemaWhere, where: q.name in ^[])
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
   end
 
   test "where_like/3" do
@@ -162,6 +170,14 @@ defmodule AntlUtilsEcto.QueryTest do
 
       %{wheres: [where_2]} =
         from(q in SchemaWhere, or_where: q.name in ^["eliel", "laetitia", "jeremy"])
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "or_where in []" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.or_where(:name, [])
+
+      %{wheres: [where_2]} = from(q in SchemaWhere, or_where: q.name in ^[])
 
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
     end

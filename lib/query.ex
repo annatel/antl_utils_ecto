@@ -11,7 +11,7 @@ defmodule AntlUtilsEcto.Query do
     from(q in queryable, where: is_nil(field(q, ^key)))
   end
 
-  def where(queryable, key, value) when is_atom(key) and length(value) > 0 do
+  def where(queryable, key, value) when is_atom(key) and is_list(value) do
     from(q in queryable, where: field(q, ^key) in ^value)
   end
 
@@ -50,7 +50,7 @@ defmodule AntlUtilsEcto.Query do
     from(q in queryable, or_where: is_nil(field(q, ^key)))
   end
 
-  def or_where(queryable, key, value) when is_atom(key) and length(value) > 0 do
+  def or_where(queryable, key, value) when is_atom(key) and is_list(value) do
     from(q in queryable, or_where: field(q, ^key) in ^value)
   end
 
