@@ -49,7 +49,22 @@ defmodule AntlUtilsEcto.QueryableTest do
       assert inspect(query) == "#Ecto.Query<from p0 in Parent, preload: [:childs]>"
     end
 
-    test "when the assoc exists, include the assoc" do
+    test "when the assoc does not exist, does not include the assoc" do
+      query = Parent.queryable() |> Parent.include([:child])
+      assert inspect(query) == "Parent"
+    end
+  end
+
+  describe "include/3" do
+    test "when the assoc exists, call the include_assoc" do
+      query =
+        Parent.queryable() |> ParentWithIncludeWithMetadata.include([:childs], field1: "value")
+
+      assert inspect(query) ==
+               "#Ecto.Query<from p0 in Parent, where: p0.field1 == ^\"value\", preload: [:childs]>"
+    end
+
+    test "when the include_assoc does not exist, does not include the assoc" do
       query = Parent.queryable() |> Parent.include([:child])
       assert inspect(query) == "Parent"
     end

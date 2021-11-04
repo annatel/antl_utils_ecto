@@ -13,6 +13,21 @@ defmodule Parent do
   end
 end
 
+defmodule ParentWithIncludeWithMetadata do
+  use Ecto.Schema
+  use AntlUtilsEcto.Queryable
+
+  embedded_schema do
+    field(:field1, :string)
+
+    has_many(:childs, Child)
+  end
+
+  defp include_assoc(queryable, :childs, field1: value) do
+    queryable |> Ecto.Query.preload(:childs) |> AntlUtilsEcto.Query.where(:field1, value)
+  end
+end
+
 defmodule ParentWithQueryableOverrided do
   use Ecto.Schema
   use AntlUtilsEcto.Queryable

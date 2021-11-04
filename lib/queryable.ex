@@ -26,9 +26,14 @@ defmodule AntlUtilsEcto.Queryable do
 
       def searchable_fields(), do: @searchable_fields
 
-      @spec include(Ecto.Queryable.t(), list()) :: Ecto.Queryable.t()
-      def include(queryable, includes) when is_list(includes),
+      @spec include(Ecto.Queryable.t(), list(), any()) :: Ecto.Queryable.t()
+      def include(queryable, includes, metadata \\ [])
+
+      def include(queryable, includes, []) when is_list(includes),
         do: Enum.reduce(includes, queryable, &include_assoc(&2, &1))
+
+      def include(queryable, includes, metadata) when is_list(includes),
+        do: Enum.reduce(includes, queryable, &include_assoc(&2, &1, metadata))
 
       def filter(queryable, filters),
         do: Enum.reduce(filters, queryable, &filter_by_field(&2, &1))
@@ -44,7 +49,7 @@ defmodule AntlUtilsEcto.Queryable do
       def search(queryable, "", _metadata, _searchable_fields), do: queryable
 
       def search(queryable, search_query, metadata, searchable_fields)
-          when is_binary(search_query) and is_list(metadata),
+          when is_binary(search_query),
           do: where(queryable, ^search_where_query(search_query, metadata, searchable_fields))
 
       def select_fields(queryable, fields),
@@ -57,7 +62,7 @@ defmodule AntlUtilsEcto.Queryable do
       end
 
       defp search_where_query(search_query, metadata, searchable_fields)
-           when length(metadata) > 0 and is_list(searchable_fields) do
+           when is_list(searchable_fields) do
         searchable_fields
         |> Enum.reduce(
           Ecto.Query.dynamic(false),
@@ -70,6 +75,8 @@ defmodule AntlUtilsEcto.Queryable do
   defmacro __before_compile__(_env) do
     quote do
       defp include_assoc(queryable, _), do: queryable
+
+      defp include_assoc(queryable, _, _), do: queryable
 
       defp filter_by_field(queryable, field),
         do: unquote(__MODULE__).filter_by_field(queryable, field)
@@ -107,9 +114,9 @@ defmodule AntlUtilsEcto.Queryable do
     dynamic([q], ^dynamic or like(type(fragment("?", field(q, ^key)), :string), ^like_value))
   end
 
-  @spec search_by_field(Ecto.Query.DynamicExpr.t(), {any, binary}, list()) ::
+  @spec search_by_field(Ecto.Query.DynamicExpr.t(), {any, binary}, any()) ::
           Ecto.Query.DynamicExpr.t()
-  def search_by_field(dynamic, {key, value}, metadata) when is_list(metadata) do
+  def search_by_field(dynamic, {key, value}, _metadata) do
     like_value = "%#{String.replace(value, "%", "\\%")}%"
     dynamic([q], ^dynamic or like(type(fragment("?", field(q, ^key)), :string), ^like_value))
   end
