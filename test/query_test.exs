@@ -58,6 +58,14 @@ defmodule AntlUtilsEcto.QueryTest do
 
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
     end
+
+    test "where in []" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.where(:name, [])
+
+      %{wheres: [where_2]} = from(q in SchemaWhere, where: q.name in ^[])
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
   end
 
   describe "where_not/3" do
@@ -167,6 +175,14 @@ defmodule AntlUtilsEcto.QueryTest do
             false or (q.start_at <= ^datetime and q.end_at <= ^datetime) or
               (q.start_at <= ^datetime and (q.end_at > ^datetime or is_nil(q.end_at)))
         )
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+    end
+
+    test "or_where in []" do
+      %{wheres: [where_1]} = SchemaWhere |> EctoQueryUtils.or_where(:name, [])
+
+      %{wheres: [where_2]} = from(q in SchemaWhere, or_where: q.name in ^[])
 
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
     end
