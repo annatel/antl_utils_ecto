@@ -41,6 +41,19 @@ defmodule AntlUtilsEcto.QueryableTest do
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
       assert Macro.to_string(where_1.params) == Macro.to_string(where_2.params)
     end
+
+    test "with an override with metadata" do
+      query_1 =
+        ParentWithFilterOverridedWithMetadata.queryable()
+        |> ParentWithFilterOverridedWithMetadata.filter(%{field1: "123"}, field2: "456")
+
+      query_2 =
+        from(p in ParentWithFilterOverridedWithMetadata,
+          where: p.field1 == ^"123" and p.field2 == ^"456"
+        )
+
+      assert inspect(query_1) == inspect(query_2)
+    end
   end
 
   describe "include/2" do

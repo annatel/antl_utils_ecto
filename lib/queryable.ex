@@ -35,8 +35,13 @@ defmodule AntlUtilsEcto.Queryable do
       def include(queryable, includes, metadata) when is_list(includes),
         do: Enum.reduce(includes, queryable, &include_assoc(&2, &1, metadata))
 
-      def filter(queryable, filters),
+      def filter(queryable, filters, metadata \\ [])
+
+      def filter(queryable, filters, []),
         do: Enum.reduce(filters, queryable, &filter_by_field(&2, &1))
+
+      def filter(queryable, filters, metadata),
+        do: Enum.reduce(filters, queryable, &filter_by_field(&2, &1, metadata))
 
       def order_by(queryable, order_bys),
         do: unquote(__MODULE__).order_by(queryable, order_bys)
@@ -81,6 +86,9 @@ defmodule AntlUtilsEcto.Queryable do
       defp filter_by_field(queryable, field),
         do: unquote(__MODULE__).filter_by_field(queryable, field)
 
+      defp filter_by_field(queryable, field, metadata),
+        do: unquote(__MODULE__).filter_by_field(queryable, field, metadata)
+
       defp search_by_field(dynamic, field),
         do: unquote(__MODULE__).search_by_field(dynamic, field)
 
@@ -91,22 +99,22 @@ defmodule AntlUtilsEcto.Queryable do
 
   import Ecto.Query, only: [dynamic: 2]
 
-  @spec filter_by_field(any, {any, any}) :: Ecto.Query.t()
-  def filter_by_field(queryable, {key, value}) do
-    queryable |> AntlUtilsEcto.Query.where(key, value)
-  end
+  @spec filter_by_field(any, {any, any}, keyword) :: Ecto.Query.t()
+  def filter_by_field(queryable, {key, value}),
+    do: queryable |> AntlUtilsEcto.Query.where(key, value)
+
+  def filter_by_field(queryable, {key, value}, _metadata),
+    do: filter_by_field(queryable, {key, value})
 
   @spec order_by(Ecto.Queryable.t(), list) :: Ecto.Queryable.t()
   def order_by(queryable, []), do: queryable
 
-  def order_by(queryable, order_bys) when is_list(order_bys) do
-    queryable |> Ecto.Query.order_by(^order_bys)
-  end
+  def order_by(queryable, order_bys) when is_list(order_bys),
+    do: queryable |> Ecto.Query.order_by(^order_bys)
 
   @spec paginate(any, pos_integer(), pos_integer()) :: Ecto.Query.t()
-  def paginate(queryable, page_size, page_number) do
-    queryable |> AntlUtilsEcto.Paginator.paginate(page_size, page_number)
-  end
+  def paginate(queryable, page_size, page_number),
+    do: queryable |> AntlUtilsEcto.Paginator.paginate(page_size, page_number)
 
   @spec search_by_field(Ecto.Query.DynamicExpr.t(), {any, binary}) :: Ecto.Query.DynamicExpr.t()
   def search_by_field(dynamic, {key, value}) do
@@ -116,10 +124,8 @@ defmodule AntlUtilsEcto.Queryable do
 
   @spec search_by_field(Ecto.Query.DynamicExpr.t(), {any, binary}, any()) ::
           Ecto.Query.DynamicExpr.t()
-  def search_by_field(dynamic, {key, value}, _metadata) do
-    like_value = "%#{String.replace(value, "%", "\\%")}%"
-    dynamic([q], ^dynamic or like(type(fragment("?", field(q, ^key)), :string), ^like_value))
-  end
+  def search_by_field(dynamic, {key, value}, _metadata),
+    do: search_by_field(dynamic, {key, value})
 
   @spec select_fields(Ecto.Queryable.t(), nil | list) :: Ecto.Queryable.t()
   def select_fields(queryable, nil), do: queryable
