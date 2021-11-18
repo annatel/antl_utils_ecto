@@ -59,6 +59,21 @@ defmodule ParentWithFilterOverrided do
   end
 end
 
+defmodule ParentWithFilterOverridedWithMetadata do
+  use Ecto.Schema
+  use AntlUtilsEcto.Queryable
+
+  embedded_schema do
+    field(:field1, :string)
+    field(:field2, :string)
+  end
+
+  defp filter_by_field(queryable, {:field1, field1}, field2: field2) do
+    queryable
+    |> where(field1: ^field1, field2: ^field2)
+  end
+end
+
 defmodule ParentWithSearchableFields do
   use Ecto.Schema
   use AntlUtilsEcto.Queryable, searchable_fields: [:field1, :field2]
