@@ -2363,4 +2363,27 @@ defmodule AntlUtilsEcto.ChangesetTest do
       assert changeset.valid?
     end
   end
+
+  defmodule ParameterizedTypeTest do
+    use Ecto.ParameterizedType
+
+    def type(_), do: :string
+    def init(opts), do: Enum.into(opts, %{})
+    def cast(_, _), do: :error
+    def load(_, _, _), do: {:ok, "a"}
+    def dump(_, _, _), do: {:ok, "a"}
+  end
+
+  defmodule SchemaForParameterized do
+    use Ecto.Schema
+
+    embedded_schema do
+      field(:field, ParameterizedTypeTest)
+    end
+  end
+
+  test "errors_on/1 for parametrized" do
+    changeset = %SchemaForParameterized{} |> Ecto.Changeset.cast(%{field: "value"}, [:field])
+    assert %{field: ["is invalid"]} = errors_on(changeset)
+  end
 end

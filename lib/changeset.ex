@@ -24,8 +24,12 @@ defmodule AntlUtilsEcto.Changeset do
   @spec errors_on(Ecto.Changeset.t()) :: %{optional(atom) => [binary]}
   def errors_on(%Ecto.Changeset{} = changeset) do
     traverse_errors(changeset, fn {message, opts} ->
-      Enum.reduce(opts, message, fn {key, value}, acc ->
-        String.replace(acc, "%{#{key}}", to_string(value))
+      Enum.reduce(opts, message, fn
+        {_, {:parameterized, _, _}}, acc ->
+          acc
+
+        {key, value}, acc ->
+          String.replace(acc, "%{#{key}}", to_string(value))
       end)
     end)
   end
