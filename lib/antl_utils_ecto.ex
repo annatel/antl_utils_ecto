@@ -22,7 +22,8 @@ defmodule AntlUtilsEcto do
 
   defp to_map(value) do
     cond do
-      is_map(value) -> to_map(value)
+      is_struct(value) -> to_map(value)
+      is_map(value) -> value
       is_list(value) -> Enum.map(value, &to_map/1)
       true -> value
     end

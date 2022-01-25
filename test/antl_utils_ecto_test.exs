@@ -8,6 +8,7 @@ defmodule AntlUtilsEctoTest do
     schema "" do
       field(:name, :string)
       field(:wives, {:array, :string}, default: [])
+      embeds_one(:attributes, :map)
       belongs_to(:parent, Schema)
       has_many(:children, Schema)
       field(:birthday, :utc_datetime, default: DateTime.utc_now())
@@ -21,6 +22,7 @@ defmodule AntlUtilsEctoTest do
     embedded_schema do
       field(:name, :string)
       field(:wives, {:array, :string}, default: [])
+      embeds_one(:attributes, :map)
       embeds_one(:parent, EmbeddedSchema)
       embeds_many(:children, EmbeddedSchema)
       field(:birthday, :utc_datetime, default: DateTime.utc_now())
@@ -36,9 +38,11 @@ defmodule AntlUtilsEctoTest do
           wives: ["sarah", "hagar"],
           parent: %Schema{name: "terah"},
           birthday: DateTime.utc_now(),
+          attributes: %{has_glasses?: false},
           children: [
             %Schema{
               name: "isaac",
+              attributes: %{has_glasses?: false},
               children: [%Schema{name: "esau"}, %Schema{name: "jacob"}]
             }
           ],
@@ -48,6 +52,8 @@ defmodule AntlUtilsEctoTest do
 
       refute Map.has_key?(abraham, :__struct__)
       assert %DateTime{} = abraham.birthday
+
+      assert abraham.attributes == %{has_glasses?: false}
 
       [isaac] = abraham.children
       refute Map.has_key?(isaac, :__struct__)
