@@ -148,7 +148,6 @@ defmodule AntlUtilsEcto.Query do
     )
   end
 
-
   @spec json_extract(Macro.t(), Macro.t()) :: Macro.t()
   defmacro json_extract(field, path) do
     quote do
@@ -156,7 +155,8 @@ defmodule AntlUtilsEcto.Query do
     end
   end
 
-  @spec where_extracted_json_contains(Ecto.Queryable.t(), binary, binary, binary) :: Ecto.Queryable.t()
+  @spec where_extracted_json_contains(Ecto.Queryable.t(), binary, binary, binary) ::
+          Ecto.Queryable.t()
   def where_extracted_json_contains(queryable, field, path, value) when is_binary(value) do
     double_quoted_value_anywhere = "%\"#{String.replace(value, "%", "\\%")}\"%"
 
