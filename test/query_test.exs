@@ -280,7 +280,7 @@ defmodule AntlUtilsEcto.QueryTest do
     test "produces expected result with valid args" do
       tested_request =
         SchemaWhere
-        |> EctoQueryUtils.where_extracted_json_contains("field", "path", "value")
+        |> EctoQueryUtils.where_extracted_json_contains(:field, "path", "value")
 
       reference_request =
         from(SchemaWhere,
@@ -300,17 +300,17 @@ defmodule AntlUtilsEcto.QueryTest do
       reference_request =
         from(SchemaWhere, select: fragment("JSON_EXTRACT(?, ?)", literal(^"left"), ^"right"))
 
-      tested_request = from(SchemaWhere, select: EctoQueryUtils.json_extract("left", "right"))
+      tested_request = from(SchemaWhere, select: EctoQueryUtils.json_extract(:left, "right"))
 
       assert Macro.to_string(reference_request) == Macro.to_string(tested_request)
     end
 
     test "produces expected result with variables as args" do
-      left = "left"
+      left = :left
       right = "right"
 
       reference_request =
-        from(SchemaWhere, select: fragment("JSON_EXTRACT(?, ?)", literal(^left), ^right))
+        from(SchemaWhere, select: fragment("JSON_EXTRACT(?, ?)", literal(^"#{left}"), ^right))
 
       tested_request = from(SchemaWhere, select: EctoQueryUtils.json_extract(left, right))
 
