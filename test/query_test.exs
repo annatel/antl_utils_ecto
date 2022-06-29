@@ -4,6 +4,7 @@ defmodule AntlUtilsEcto.QueryTest do
   import Ecto.Query
 
   alias AntlUtilsEcto.Query, as: EctoQueryUtils
+  require AntlUtilsEcto.Query
 
   defmodule SchemaWhere do
     use Ecto.Schema
@@ -273,5 +274,47 @@ defmodule AntlUtilsEcto.QueryTest do
     %{wheres: [where_2]} = from(q in SchemaWhere, or_where: like(q.name, ^"%foo%"))
 
     assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+  end
+
+  describe "where_extracted_json_contains/4" do
+    test "produces expected result with valid args" do
+      tested_request =
+        SchemaWhere
+        |> EctoQueryUtils.where_extracted_json_contains("field", "path", "value")
+
+      reference_request =
+        from(SchemaWhere,
+          where:
+            like(
+              fragment("JSON_EXTRACT(?, ?)", literal(^"field"), ^"path"),
+              ^"%\"value\"%"
+            )
+        )
+
+      assert Macro.to_string(tested_request) == Macro.to_string(reference_request)
+    end
+  end
+
+  describe "json_extract/2 macro" do
+    test "produces expected result with literal binaries as args" do
+      reference_request =
+        from(SchemaWhere, select: fragment("JSON_EXTRACT(?, ?)", literal(^"left"), ^"right"))
+
+      tested_request = from(SchemaWhere, select: EctoQueryUtils.json_extract("left", "right"))
+
+      assert Macro.to_string(reference_request) == Macro.to_string(tested_request)
+    end
+
+    test "produces expected result with variables as args" do
+      left = "left"
+      right = "right"
+
+      reference_request =
+        from(SchemaWhere, select: fragment("JSON_EXTRACT(?, ?)", literal(^left), ^right))
+
+      tested_request = from(SchemaWhere, select: EctoQueryUtils.json_extract(left, right))
+
+      assert Macro.to_string(reference_request) == Macro.to_string(tested_request)
+    end
   end
 end
