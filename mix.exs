@@ -32,7 +32,7 @@ defmodule AntlUtilsEcto.MixProject do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:ecto, "~> 3.0"},
+      {:ecto, ">= 3.8.4"},
       {:antl_utils_elixir, "~> 0.4"},
       {:jason, "~> 1.2"}
     ]
