@@ -11,7 +11,7 @@ defmodule AntlUtilsEctoTest do
       embeds_one(:attributes, :map)
       belongs_to(:parent, Schema)
       has_many(:children, Schema)
-      field(:birthday, :utc_datetime, default: DateTime.utc_now())
+      field(:birthday, :utc_datetime, default: DateTime.utc_now() |> DateTime.truncate(:second))
       field(:rdvs, {:array, :utc_datetime}, default: [])
     end
   end
@@ -25,7 +25,7 @@ defmodule AntlUtilsEctoTest do
       embeds_one(:attributes, :map)
       embeds_one(:parent, EmbeddedSchema)
       embeds_many(:children, EmbeddedSchema)
-      field(:birthday, :utc_datetime, default: DateTime.utc_now())
+      field(:birthday, :utc_datetime, default: DateTime.utc_now() |> DateTime.truncate(:second))
       field(:rdvs, {:array, :utc_datetime}, default: [])
     end
   end

@@ -147,4 +147,20 @@ defmodule AntlUtilsEcto.Query do
            (field(q, ^end_at_key) > ^datetime or is_nil(field(q, ^end_at_key))))
     )
   end
+
+  @spec json_extract(Macro.t(), Macro.t()) :: Macro.t()
+  defmacro json_extract(field, path) do
+    quote do
+      fragment("JSON_EXTRACT(?, ?)", literal(^unquote(field)), ^unquote(path))
+    end
+  end
+
+  @spec where_extracted_json_contains(Ecto.Queryable.t(), binary, binary, binary) ::
+          Ecto.Queryable.t()
+  def where_extracted_json_contains(queryable, field, path, value) when is_binary(value) do
+    double_quoted_value_anywhere = "%\"#{String.replace(value, "%", "\\%")}\"%"
+
+    queryable
+    |> Ecto.Query.where([_], like(json_extract(field, path), ^double_quoted_value_anywhere))
+  end
 end
