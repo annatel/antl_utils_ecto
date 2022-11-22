@@ -1,5 +1,5 @@
 %{
-  "antl_utils_elixir": {:hex, :antl_utils_elixir, "0.4.0", "5be6c4acbafe27a8badca54ad9eb6e3920c58e19b177341542ae87be07a8a74d", [:mix], [], "hexpm", "3898f66c7c95d62f11381beda43ebde860ab9d43716dd899e22ac61aeabecce1"},
+  "antl_utils_elixir": {:hex, :antl_utils_elixir, "1.4.1", "7b681de4173a8848a1e4f8f4b0bfa2000f37d4d7613d441e16fabd6772158af3", [:mix], [], "hexpm", "51ad59d0a3372f983456dad7fba51749aab89d11bc8b42e97a07fe0fceb33cca"},
   "decimal": {:hex, :decimal, "2.0.0", "a78296e617b0f5dd4c6caf57c714431347912ffb1d0842e998e9792b5642d697", [:mix], [], "hexpm", "34666e9c55dea81013e77d9d87370fe6cb6291d1ef32f46a1600230b1d44f577"},
   "earmark_parser": {:hex, :earmark_parser, "1.4.10", "6603d7a603b9c18d3d20db69921527f82ef09990885ed7525003c7fe7dc86c56", [:mix], [], "hexpm", "8e2d5370b732385db2c9b22215c3f59c84ac7dda7ed7e544d7c459496ae519c0"},
   "ecto": {:hex, :ecto, "3.8.4", "e06b8b87e62b27fea17fd2ff6041572ddd10339fd16cdf58446e402c6c90a74b", [:mix], [{:decimal, "~> 1.6 or ~> 2.0", [hex: :decimal, repo: "hexpm", optional: false]}, {:jason, "~> 1.0", [hex: :jason, repo: "hexpm", optional: true]}, {:telemetry, "~> 0.4 or ~> 1.0", [hex: :telemetry, repo: "hexpm", optional: false]}], "hexpm", "f9244288b8d42db40515463a008cf3f4e0e564bb9c249fe87bf28a6d79fe82d4"},
