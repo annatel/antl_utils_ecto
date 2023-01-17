@@ -5,11 +5,12 @@ defmodule Parent do
   embedded_schema do
     field(:field1, :string)
 
-    has_many(:childs, Child)
+    has_many(:children, Child)
+    has_many(:children2, Child)
   end
 
-  defp include_assoc(queryable, :childs) do
-    queryable |> Ecto.Query.preload(:childs)
+  defp include_assoc(queryable, :children2) do
+    queryable |> Ecto.Query.preload(:overriden)
   end
 end
 
@@ -20,11 +21,12 @@ defmodule ParentWithIncludeWithMetadata do
   embedded_schema do
     field(:field1, :string)
 
-    has_many(:childs, Child)
+    has_many(:children, Child)
+    has_many(:children2, Child)
   end
 
-  defp include_assoc(queryable, :childs, field1: value) do
-    queryable |> Ecto.Query.preload(:childs) |> AntlUtilsEcto.Query.where(:field1, value)
+  defp include_assoc(queryable, :children2, field1: value) do
+    queryable |> Ecto.Query.preload(:overriden) |> AntlUtilsEcto.Query.where(:field1, value)
   end
 end
 
@@ -37,12 +39,12 @@ defmodule ParentWithQueryableOverrided do
   embedded_schema do
     field(:field1, :string)
 
-    has_many(:childs, Child)
+    has_many(:children, Child)
   end
 
   def queryable() do
     __MODULE__
-    |> join(:left, [p], childs in assoc(p, :childs))
+    |> join(:left, [p], children in assoc(p, :children))
   end
 end
 

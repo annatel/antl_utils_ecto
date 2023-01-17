@@ -11,7 +11,7 @@ defmodule AntlUtilsEcto.QueryableTest do
     end
 
     test "queryable overrided" do
-      assert inspect(from(p in ParentWithQueryableOverrided, left_join: c in assoc(p, :childs))) ==
+      assert inspect(from(p in ParentWithQueryableOverrided, left_join: c in assoc(p, :children))) ==
                inspect(ParentWithQueryableOverrided.queryable())
     end
   end
@@ -57,29 +57,26 @@ defmodule AntlUtilsEcto.QueryableTest do
   end
 
   describe "include/2" do
-    test "when the assoc exists, call the include_assoc" do
-      query = Parent.queryable() |> Parent.include([:childs])
-      assert inspect(query) == "#Ecto.Query<from p0 in Parent, preload: [:childs]>"
+    test "when include_assoc is not overriden, call the default include_assoc" do
+      query = Parent.queryable() |> Parent.include([:children])
+      assert inspect(query) == "#Ecto.Query<from p0 in Parent, preload: [:children]>"
     end
 
-    test "when the assoc does not exist, does not include the assoc" do
-      query = Parent.queryable() |> Parent.include([:child])
-      assert inspect(query) == "Parent"
+    test "when include_assoc is overriden, call the overriden include_assoc" do
+      query = Parent.queryable() |> Parent.include([:children2])
+      assert inspect(query) == "#Ecto.Query<from p0 in Parent, preload: [:overriden]>"
     end
   end
 
   describe "include/3" do
-    test "when the assoc exists, call the include_assoc" do
-      query =
-        Parent.queryable() |> ParentWithIncludeWithMetadata.include([:childs], field1: "value")
-
-      assert inspect(query) ==
-               "#Ecto.Query<from p0 in Parent, where: p0.field1 == ^\"value\", preload: [:childs]>"
+    test "when include_assoc is not overriden, call the default include_assoc" do
+      query = Parent.queryable() |> Parent.include([:children], field1: "value")
+      assert inspect(query) == "#Ecto.Query<from p0 in Parent, preload: [:children]>"
     end
 
-    test "when the include_assoc does not exist, does not include the assoc" do
-      query = Parent.queryable() |> Parent.include([:child])
-      assert inspect(query) == "Parent"
+    test "when include_assoc is overriden, call the overriden include_assoc" do
+      query = Parent.queryable() |> ParentWithIncludeWithMetadata.include([:children2], field1: "value")
+      assert inspect(query) == "#Ecto.Query<from p0 in Parent, where: p0.field1 == ^\"value\", preload: [:overriden]>"
     end
   end
 

@@ -79,9 +79,11 @@ defmodule AntlUtilsEcto.Queryable do
 
   defmacro __before_compile__(_env) do
     quote do
-      defp include_assoc(queryable, _), do: queryable
+      defp include_assoc(queryable, assoc),
+        do: queryable |> Ecto.Query.preload(^assoc)
 
-      defp include_assoc(queryable, _, _), do: queryable
+      defp include_assoc(queryable, assoc, _),
+        do: queryable |> Ecto.Query.preload(^assoc)
 
       defp filter_by_field(queryable, field),
         do: unquote(__MODULE__).filter_by_field(queryable, field)
