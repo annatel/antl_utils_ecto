@@ -102,8 +102,17 @@ defmodule AntlUtilsEcto.Queryable do
   import Ecto.Query, only: [dynamic: 2]
 
   @spec filter_by_field(any, {any, any}, keyword) :: Ecto.Query.t()
-  def filter_by_field(queryable, {key, value}),
-    do: queryable |> AntlUtilsEcto.Query.where(key, value)
+
+  def filter_by_field(queryable, {:not, {key, value}}) do
+    queryable |> AntlUtilsEcto.Query.where_not(key, value)
+  end
+
+  def filter_by_field(queryable, {key, value}) do
+    queryable |> AntlUtilsEcto.Query.where(key, value)
+  end
+
+  def filter_by_field(queryable, {:not, {key, value}}, _metadata),
+    do: filter_by_field(queryable, {:not, {key, value}})
 
   def filter_by_field(queryable, {key, value}, _metadata),
     do: filter_by_field(queryable, {key, value})

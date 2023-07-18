@@ -59,6 +59,10 @@ defmodule ParentWithFilterOverrided do
   defp filter_by_field(queryable, {:field1, value}) do
     queryable |> AntlUtilsEcto.Query.where_like(:field1, value)
   end
+
+  defp filter_by_field(queryable, {:not, {:field1, value}}) do
+    queryable |> AntlUtilsEcto.Query.where_like(:field1, value)
+  end
 end
 
 defmodule ParentWithFilterOverridedWithMetadata do
@@ -73,6 +77,12 @@ defmodule ParentWithFilterOverridedWithMetadata do
   defp filter_by_field(queryable, {:field1, field1}, field2: field2) do
     queryable
     |> where(field1: ^field1, field2: ^field2)
+  end
+
+  defp filter_by_field(queryable, {:not, {:field1, field1}}, field2: field2) do
+    queryable
+    |> AntlUtilsEcto.Query.where_not(:field1, field1)
+    |> where(field2: ^field2)
   end
 end
 
