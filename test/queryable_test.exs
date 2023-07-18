@@ -54,6 +54,54 @@ defmodule AntlUtilsEcto.QueryableTest do
 
       assert inspect(query_1) == inspect(query_2)
     end
+
+    test "list of filters and not filters" do
+      %{wheres: [where_1, where_2]} =
+        Parent.queryable() |> Parent.filter([{:not, {:field1, "123"}}, {:field2, "456"}])
+
+      %{wheres: [where_3, where_4]} =
+        from(p in Parent, where: p.field1 != ^"123", where: p.field2 == ^"456")
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_3.expr)
+      assert Macro.to_string(where_1.params) == Macro.to_string(where_3.params)
+      assert Macro.to_string(where_2.expr) == Macro.to_string(where_4.expr)
+      assert Macro.to_string(where_2.params) == Macro.to_string(where_4.params)
+    end
+
+    test "not filter - without override use the default filter" do
+      %{wheres: [where_1]} = Parent.queryable() |> Parent.filter(%{not: {:field1, "123456"}})
+
+      %{wheres: [where_2]} = from(p in Parent, where: p.field1 != ^"123456")
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+      assert Macro.to_string(where_1.params) == Macro.to_string(where_2.params)
+    end
+
+    test "not filter - with an override" do
+      %{wheres: [where_1]} =
+        ParentWithFilterOverrided.queryable()
+        |> ParentWithFilterOverrided.filter(%{not: {:field1, "123456"}})
+
+      %{wheres: [where_2]} =
+        ParentWithFilterOverrided |> EctoQueryUtils.where_like(:field1, "123456")
+
+      assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
+      assert Macro.to_string(where_1.params) == Macro.to_string(where_2.params)
+    end
+
+    test "not filter - with an override with metadata" do
+      query_1 =
+        ParentWithFilterOverridedWithMetadata.queryable()
+        |> ParentWithFilterOverridedWithMetadata.filter(%{not: {:field1, "123"}}, field2: "456")
+
+      query_2 =
+        from(p in ParentWithFilterOverridedWithMetadata,
+          where: p.field1 != ^"123",
+          where: p.field2 == ^"456"
+        )
+
+      assert inspect(query_1) == inspect(query_2)
+    end
   end
 
   describe "include/2" do
@@ -75,8 +123,11 @@ defmodule AntlUtilsEcto.QueryableTest do
     end
 
     test "when include_assoc is overriden, call the overriden include_assoc" do
-      query = Parent.queryable() |> ParentWithIncludeWithMetadata.include([:children2], field1: "value")
-      assert inspect(query) == "#Ecto.Query<from p0 in Parent, where: p0.field1 == ^\"value\", preload: [:overriden]>"
+      query =
+        Parent.queryable() |> ParentWithIncludeWithMetadata.include([:children2], field1: "value")
+
+      assert inspect(query) ==
+               "#Ecto.Query<from p0 in Parent, where: p0.field1 == ^\"value\", preload: [:overriden]>"
     end
   end
 
