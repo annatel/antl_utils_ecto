@@ -2,7 +2,7 @@ defmodule AntlUtilsEcto.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/annatel/antl_utils_ecto"
-  @version "2.9.1"
+  @version "2.10.0"
 
   def project do
     [
@@ -31,10 +31,11 @@ defmodule AntlUtilsEcto.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:ecto, ">= 3.8.4"},
       {:antl_utils_elixir, "~> 1.4"},
-      {:jason, "~> 1.2"}
+      {:ecto, ">= 3.8.4"},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:jason, "~> 1.2"},
+      {:shortcode, "~> 0.7"},
     ]
   end
 
