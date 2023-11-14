@@ -35,7 +35,7 @@ defmodule AntlUtilsEcto.MixProject do
       {:ecto, ">= 3.8.4"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:jason, "~> 1.2"},
-      {:shortcode, "~> 0.7"},
+      {:shortcode, "~> 0.7"}
     ]
   end
 

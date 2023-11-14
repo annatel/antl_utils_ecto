@@ -143,7 +143,9 @@ defmodule AntlUtilsEcto.QueryTest do
         SchemaWhere |> EctoQueryUtils.where_period_status(:ended, :start_at, :end_at, datetime)
 
       %{wheres: [where_2]} =
-        from(q in SchemaWhere, where: false or (q.start_at <= ^datetime and q.end_at <= ^datetime))
+        from(q in SchemaWhere,
+          where: false or (q.start_at <= ^datetime and q.end_at <= ^datetime)
+        )
 
       assert Macro.to_string(where_1.expr) == Macro.to_string(where_2.expr)
     end
