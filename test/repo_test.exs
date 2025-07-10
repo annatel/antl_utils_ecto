@@ -10,6 +10,13 @@ defmodule AntlUtilsEcto.RepoTest do
     end
   end
 
+  describe "non regression : empty insert should not warn" do
+    test "This should not warn, or hopefully someone will see and fix it. --warnings-as-errors does not catch it !" do
+      assert %Schema{id: _} = %Schema{} |> PaginatorRepo.insert!()
+    end
+
+  end
+
   describe "paginate" do
     test "paginate" do
       for i <- 1..5, do: %Schema{id: i} |> PaginatorRepo.insert!()
