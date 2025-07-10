@@ -14,7 +14,6 @@ defmodule AntlUtilsEcto.RepoTest do
     test "This should not warn, or hopefully someone will see and fix it. --warnings-as-errors does not catch it !" do
       assert %Schema{id: _} = %Schema{} |> PaginatorRepo.insert!()
     end
-
   end
 
   describe "paginate" do
