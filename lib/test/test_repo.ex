@@ -95,7 +95,8 @@ defmodule AntlUtilsEcto.TestAdapter do
   def insert(_, %{context: nil} = meta, fields, on_conflict, returning, _opts) do
     meta = Map.merge(meta, %{fields: fields, on_conflict: on_conflict, returning: returning})
     send(self(), {:insert, meta})
-    {:ok, Enum.zip(returning, 1..length(returning))}
+    last = max(1, length(returning)) # avoid warning since 1.18
+    {:ok, Enum.zip(returning, 1..last)}
   end
 
   def insert(_, %{context: context}, _fields, _on_conflict, _returning, _opts) do
@@ -106,7 +107,8 @@ defmodule AntlUtilsEcto.TestAdapter do
   def update(_, %{context: nil} = meta, [_ | _] = changes, filters, returning, _opts) do
     meta = Map.merge(meta, %{changes: changes, filters: filters, returning: returning})
     send(self(), {:update, meta})
-    {:ok, Enum.zip(returning, 1..length(returning))}
+    last = max(1, length(returning)) # avoid warning since 1.18
+    {:ok, Enum.zip(returning, 1..last)}
   end
 
   def update(_, %{context: context}, [_ | _], _filters, _returning, _opts) do
