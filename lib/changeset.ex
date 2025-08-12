@@ -25,7 +25,7 @@ defmodule AntlUtilsEcto.Changeset do
   def errors_on(%Ecto.Changeset{} = changeset) do
     traverse_errors(changeset, fn {message, opts} ->
       Enum.reduce(opts, message, fn
-        {_, {:parameterized, _, _}}, acc ->
+        {_, {:parameterized, _}}, acc ->
           acc
 
         {key, value}, acc ->

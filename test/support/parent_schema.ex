@@ -2,7 +2,7 @@ defmodule Parent do
   use Ecto.Schema
   use AntlUtilsEcto.Queryable
 
-  embedded_schema do
+  schema "parent" do
     field(:field1, :string)
 
     has_many(:children, Child)
@@ -18,7 +18,7 @@ defmodule ParentWithIncludeWithMetadata do
   use Ecto.Schema
   use AntlUtilsEcto.Queryable
 
-  embedded_schema do
+  schema "parent_with_included_metadata" do
     field(:field1, :string)
 
     has_many(:children, Child)
@@ -36,7 +36,7 @@ defmodule ParentWithQueryableOverrided do
 
   import Ecto.Query
 
-  embedded_schema do
+  schema "parent_with_queryable_overriden" do
     field(:field1, :string)
 
     has_many(:children, Child)
@@ -52,7 +52,7 @@ defmodule ParentWithFilterOverrided do
   use Ecto.Schema
   use AntlUtilsEcto.Queryable
 
-  embedded_schema do
+  schema "parent_with_filter_overriden" do
     field(:field1, :string)
   end
 
@@ -69,7 +69,7 @@ defmodule ParentWithFilterOverridedWithMetadata do
   use Ecto.Schema
   use AntlUtilsEcto.Queryable
 
-  embedded_schema do
+  schema "parent_with_filter_overriden_with_metadata" do
     field(:field1, :string)
     field(:field2, :string)
   end
@@ -90,7 +90,7 @@ defmodule ParentWithSearchableFields do
   use Ecto.Schema
   use AntlUtilsEcto.Queryable, searchable_fields: [:field1, :field2]
 
-  embedded_schema do
+  schema "parent_with_searchable_fields" do
     field(:field1, :string)
   end
 end
@@ -99,7 +99,7 @@ defmodule ParentWithSortableFields do
   use Ecto.Schema
   use AntlUtilsEcto.Queryable, sortable_fields: [:field1, :field2]
 
-  embedded_schema do
+  schema "parent_with_sortable_fields" do
     field(:field1, :string)
   end
 end
@@ -110,7 +110,7 @@ defmodule ParentWithSearchOverrided do
 
   import Ecto.Query, only: [dynamic: 2]
 
-  embedded_schema do
+  schema "parent_with_search_overrriden" do
     field(:field1, :string)
   end
 
@@ -125,7 +125,7 @@ defmodule ParentWithSearchWithMetadataOverrided do
 
   import Ecto.Query, only: [dynamic: 2]
 
-  embedded_schema do
+  schema "parent_with_search_with_metadata_overriden" do
     field(:field1, :string)
     field(:field2, :string)
   end

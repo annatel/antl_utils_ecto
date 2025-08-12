@@ -1,7 +1,7 @@
 defmodule Child do
   use Ecto.Schema
 
-  embedded_schema do
+  schema "child" do
     field(:field1, :string)
     field(:field2, :string)
 

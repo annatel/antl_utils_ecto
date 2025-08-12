@@ -151,7 +151,7 @@ defmodule AntlUtilsEcto.Query do
   @spec json_extract(Macro.t(), Macro.t()) :: Macro.t()
   defmacro json_extract(field, path) do
     quote do
-      fragment("JSON_EXTRACT(?, ?)", literal(^"#{unquote(field)}"), ^unquote(path))
+      fragment("JSON_EXTRACT(?, ?)", identifier(^"#{unquote(field)}"), ^unquote(path))
     end
   end
 
