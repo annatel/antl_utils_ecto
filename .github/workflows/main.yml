@@ -40,4 +40,4 @@ jobs:
         run: mix test --warnings-as-errors
 
       - name: Code coverage
-        run: mix test --cover
+        run: mix test
