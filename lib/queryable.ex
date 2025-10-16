@@ -99,7 +99,7 @@ defmodule AntlUtilsEcto.Queryable do
     end
   end
 
-  import Ecto.Query, only: [dynamic: 2]
+  import Ecto.Query, only: [dynamic: 2, order_by: 3]
 
   @spec filter_by_field(any, {any, any}, keyword) :: Ecto.Query.t()
 
@@ -120,8 +120,19 @@ defmodule AntlUtilsEcto.Queryable do
   @spec order_by(Ecto.Queryable.t(), list) :: Ecto.Queryable.t()
   def order_by(queryable, []), do: queryable
 
-  def order_by(queryable, order_bys) when is_list(order_bys),
-    do: queryable |> Ecto.Query.order_by(^order_bys)
+  ## rand option is supported by mysql only
+  def order_by(queryable, order_bys) when is_list(order_bys) do
+    Enum.reduce(order_bys, queryable, fn
+      {direction, :rand}, acc ->
+        acc |> order_by([queryable], [{^direction, fragment("RAND()")}])
+
+      {direction, field}, acc when direction in [:asc, :desc] ->
+        acc |> order_by([queryable], [{^direction, field(queryable, ^field)}])
+
+      field, acc ->
+        acc |> order_by([queryable], field(queryable, ^field))
+    end)
+  end
 
   @spec paginate(any, pos_integer(), pos_integer()) :: Ecto.Query.t()
   def paginate(queryable, page_size, page_number),

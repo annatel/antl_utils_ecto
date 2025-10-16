@@ -146,6 +146,13 @@ defmodule AntlUtilsEcto.QueryableTest do
       query = Parent.queryable() |> Parent.order_by(desc: :field1)
       assert inspect(query) == "#Ecto.Query<from p0 in Parent, order_by: [desc: p0.field1]>"
     end
+
+    test "handle rand" do
+      query = Parent.queryable() |> Parent.order_by(asc: :rand)
+
+      assert inspect(query) ==
+               "#Ecto.Query<from p0 in Parent, order_by: [asc: fragment(\"RAND()\")]>"
+    end
   end
 
   describe "search/2" do
