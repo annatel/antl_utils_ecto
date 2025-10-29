@@ -30,7 +30,7 @@ defmodule AntlUtilsEcto.RepoTest do
       assert_received {:all, query}
 
       assert inspect(query) ==
-               "#Ecto.Query<from s0 in AntlUtilsEcto.RepoTest.Schema, select: count(s0.id)>"
+               "#Ecto.Query<from s0 in AntlUtilsEcto.RepoTest.Schema, select: count()>"
 
       assert_received {:all, query}
 
